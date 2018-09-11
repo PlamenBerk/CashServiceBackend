@@ -1,5 +1,7 @@
 package com.cashregister.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,10 @@ public class ClientService extends BaseService {
 		client.setManager(manager);
 		getEm().persist(client);
 		return clientManagerWrapper;
+	}
+
+	public List<Client> getAllClients() throws Exception {
+		return getEm().createNamedQuery("getAllClients", Client.class).getResultList();
 	}
 
 }

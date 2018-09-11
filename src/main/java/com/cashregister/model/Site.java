@@ -10,7 +10,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity(name = "site")
+@Entity
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PUBLIC)
 public class Site extends BaseModel {
@@ -26,6 +26,6 @@ public class Site extends BaseModel {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "client_id")
-	private Client manager;
+	private Client client;
 
 }

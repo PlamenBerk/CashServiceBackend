@@ -7,7 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity(name = "device_model")
+@Entity
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PUBLIC)
 public class DeviceModel extends BaseModel {
