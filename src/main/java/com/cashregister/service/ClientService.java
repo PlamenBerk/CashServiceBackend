@@ -2,6 +2,8 @@ package com.cashregister.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import com.cashregister.model.Client;
 import com.cashregister.model.Manager;
 
 @Service
+@Transactional
 public class ClientService extends BaseService {
 
 	@Autowired
@@ -30,6 +33,23 @@ public class ClientService extends BaseService {
 
 	public List<Client> getAllClients() throws Exception {
 		return getEm().createNamedQuery("getAllClients", Client.class).getResultList();
+	}
+
+	public Client updateClient(ClientManagerWrapperDTO clientManagerWrapper, Integer id) throws Exception {
+		Client client = getEm().find(Client.class, id);
+		client.setName(clientManagerWrapper.getClientDTO().getName());
+		client.setAddress(clientManagerWrapper.getClientDTO().getAddress());
+		client.setBulstat(clientManagerWrapper.getClientDTO().getBulstat());
+		client.setComment(clientManagerWrapper.getClientDTO().getComment());
+		client.setEGN(clientManagerWrapper.getClientDTO().getEGN());
+		client.setTDD(clientManagerWrapper.getClientDTO().getTDD());
+
+		Manager editedManager = getEm().find(Manager.class, client.getId());
+		editedManager.setName(clientManagerWrapper.getManagerDTO().getName());
+		editedManager.setPhone(clientManagerWrapper.getManagerDTO().getPhone());
+
+		client.setManager(editedManager);
+		return client;
 	}
 
 }
