@@ -13,4 +13,5 @@ public class ClientDTO {
 	private String address;
 	private String TDD;
 	private String comment;
+
 }

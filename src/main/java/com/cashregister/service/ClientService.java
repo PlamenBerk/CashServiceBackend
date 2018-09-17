@@ -23,12 +23,12 @@ public class ClientService extends BaseService {
 	@Autowired
 	private ManagerMapper managerMapper;
 
-	public ClientManagerWrapperDTO saveClient(ClientManagerWrapperDTO clientManagerWrapper) throws Exception {
+	public Client saveClient(ClientManagerWrapperDTO clientManagerWrapper) throws Exception {
 		Client client = clientMapper.clientDTOtoClient(clientManagerWrapper.getClientDTO());
 		Manager manager = managerMapper.managerDTOtoManager(clientManagerWrapper.getManagerDTO());
 		client.setManager(manager);
 		getEm().persist(client);
-		return clientManagerWrapper;
+		return client;
 	}
 
 	public List<Client> getAllClients() throws Exception {

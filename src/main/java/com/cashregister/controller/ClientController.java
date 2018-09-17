@@ -26,7 +26,7 @@ public class ClientController {
 
 	@RequestMapping(value = "/client", method = RequestMethod.POST)
 	public ResponseEntity<?> addNewClient(@RequestBody ClientManagerWrapperDTO clientManagerWrapper) throws Exception {
-		return new ResponseEntity<>(clientService.saveClient(clientManagerWrapper), HttpStatus.OK);
+		return new ResponseEntity<Client>(clientService.saveClient(clientManagerWrapper), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/client", method = RequestMethod.GET)
