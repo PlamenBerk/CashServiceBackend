@@ -44,7 +44,7 @@ public class ClientService extends BaseService {
 		client.setEGN(clientManagerWrapper.getClientDTO().getEGN());
 		client.setTDD(clientManagerWrapper.getClientDTO().getTDD());
 
-		Manager editedManager = getEm().find(Manager.class, client.getId());
+		Manager editedManager = getEm().find(Manager.class, client.getManager().getId());
 		editedManager.setName(clientManagerWrapper.getManagerDTO().getName());
 		editedManager.setPhone(clientManagerWrapper.getManagerDTO().getPhone());
 
