@@ -15,4 +15,5 @@ INSERT INTO `cashregister`.`client` (`egn`, `tdd`, `address`, `bulstat`, `commen
 INSERT INTO `cashregister`.`site` (`id`, `address`, `name`, `phone`, `client_id`) VALUES ('1', 'adrres1', 'name1', 'phone1', '1');
 INSERT INTO `cashregister`.`site` (`id`, `address`, `name`, `phone`, `client_id`) VALUES ('2', 'adrres2', 'name2', 'phone2', '2');
 
-
+INSERT INTO `cashregister`.`device_model` (`id`, `certificate`, `device_num_prefix`, `fiscal_num_prefix`, `manufacturer`, `model`) VALUES ('1', 'certificate', 'MS', 'FN', 'dateks', 'dt23');
+INSERT INTO `cashregister`.`device_model` (`id`, `certificate`, `device_num_prefix`, `fiscal_num_prefix`, `manufacturer`, `model`) VALUES ('2', 'certificate2', 'MS2', 'FN2', 'dateks2', 'dt232');
