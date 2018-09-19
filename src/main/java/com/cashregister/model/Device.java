@@ -32,11 +32,11 @@ public class Device extends BaseModel {
 	@Column
 	private LocalDate napDate;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "site_id")
 	private Site site;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "device_model_id")
 	private DeviceModel deviceModel;
 
