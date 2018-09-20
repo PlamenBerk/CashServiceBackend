@@ -37,7 +37,7 @@ public class SiteController {
 	}
 
 	@RequestMapping(value = "/site/{siteId}", method = RequestMethod.PUT, consumes = "application/json")
-	public ResponseEntity<?> updateClient(@RequestBody SiteDTO siteDTO, @PathVariable("siteId") Integer siteId)
+	public ResponseEntity<?> updateSite(@RequestBody SiteDTO siteDTO, @PathVariable("siteId") Integer siteId)
 			throws Exception {
 		return new ResponseEntity<Site>(siteService.updateSite(siteDTO, siteId), HttpStatus.OK);
 	}

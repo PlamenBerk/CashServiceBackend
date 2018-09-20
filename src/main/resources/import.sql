@@ -17,3 +17,8 @@ INSERT INTO `cashregister`.`site` (`id`, `address`, `name`, `phone`, `client_id`
 
 INSERT INTO `cashregister`.`device_model` (`id`, `certificate`, `device_num_prefix`, `fiscal_num_prefix`, `manufacturer`, `model`) VALUES ('1', 'certificate', 'MS', 'FN', 'dateks', 'dt23');
 INSERT INTO `cashregister`.`device_model` (`id`, `certificate`, `device_num_prefix`, `fiscal_num_prefix`, `manufacturer`, `model`) VALUES ('2', 'certificate2', 'MS2', 'FN2', 'dateks2', 'dt232');
+
+INSERT INTO `cashregister`.`device` (`id`, `device_num_postfix`, `fiscal_num_postfix`, `nap_date`, `nap_number`, `sim`, `device_model_id`, `site_id`) VALUES ('1', 'devPost', 'fisclPost', '2019-09-09', 'NAPnum', 'SIMNO', '1', '1');
+INSERT INTO `cashregister`.`device` (`id`, `device_num_postfix`, `fiscal_num_postfix`, `nap_date`, `nap_number`, `sim`, `device_model_id`, `site_id`) VALUES ('2', 'devPost2', 'fisclPost2', '2019-09-09', 'NAPnum2', 'SIMNO2', '2', '1');
+
+

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter(value = AccessLevel.PUBLIC)
 public class DeviceDTO {
 
-	private String SIM;
+	private String sim;
 	private String deviceNumPostfix;
 	private String fiscalNumPostfix;
 	private String napNumber;

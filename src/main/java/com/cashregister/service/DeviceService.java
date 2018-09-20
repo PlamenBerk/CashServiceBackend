@@ -1,5 +1,7 @@
 package com.cashregister.service;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,22 @@ public class DeviceService extends BaseService {
 		device.setDeviceModel(deviceModel);
 
 		getEm().persist(device);
+
+		return device;
+	}
+
+	public List<Device> getDevicesForSite(int siteId) {
+		return getEm().createNamedQuery("getDevicesForSite", Device.class).setParameter("siteId", siteId)
+				.getResultList();
+	}
+
+	public Device updateDevice(DeviceDTO deviceDTO, Integer deviceId) {
+		Device device = getEm().find(Device.class, deviceId);
+		device.setDeviceNumPostfix(deviceDTO.getDeviceNumPostfix());
+		device.setFiscalNumPostfix(deviceDTO.getFiscalNumPostfix());
+		device.setNapDate(deviceDTO.getNapDate());
+		device.setNapNumber(deviceDTO.getNapNumber());
+		device.setSim(deviceDTO.getSim());
 
 		return device;
 	}

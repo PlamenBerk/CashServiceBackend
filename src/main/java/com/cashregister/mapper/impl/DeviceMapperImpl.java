@@ -20,7 +20,7 @@ public class DeviceMapperImpl implements DeviceMapper {
 		device.setFiscalNumPostfix(deviceDTO.getFiscalNumPostfix());
 		device.setNapDate(deviceDTO.getNapDate());
 		device.setNapNumber(deviceDTO.getNapNumber());
-		device.setSIM(deviceDTO.getSIM());
+		device.setSim(deviceDTO.getSim());
 
 		return device;
 	}
