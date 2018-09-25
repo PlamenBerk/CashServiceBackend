@@ -1,5 +1,6 @@
 package com.cashregister.service;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
@@ -61,6 +62,8 @@ public class DocumentService extends BaseService {
 			}
 		}
 		doc.write(new FileOutputStream("D://output.docx"));
+
+		File file = new File("D://output.docx");
 		return "Document is created!";
 	}
 
