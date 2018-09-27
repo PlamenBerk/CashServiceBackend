@@ -1,10 +1,8 @@
 package com.cashregister.config;
 
 import java.io.File;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.util.Calendar;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -14,30 +12,35 @@ public class FileStructureOrganizer {
 
 	public static String CURRENT_FOLDER_LOCATION;
 
-	@Scheduled(cron = "0 59 23 L * ?")
+	@Scheduled(cron = "0 59 23 * * ?")
 	public void reportCurrentTime() {
-		LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()),
-				ZoneId.systemDefault());
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-		File theDir = new File("D:/" + date.format(formatter));
+		Calendar c = Calendar.getInstance();
+		if (c.get(Calendar.DATE) == c.getActualMaximum(Calendar.DATE)) {
 
-		if (!theDir.exists()) {
-			System.out.println("creating directory: " + theDir.getName());
-			boolean result = false;
+			LocalDate futureDate = LocalDate.now().plusMonths(1);
 
-			try {
-				theDir.mkdir();
-				result = true;
-			} catch (SecurityException se) {
-				// handle it
+			File theDir = new File("D:/" + futureDate.getMonth().name() + "-" + futureDate.getYear());
+
+			if (!theDir.exists()) {
+				System.out.println("creating directory: " + theDir.getName());
+				boolean result = false;
+
+				try {
+					theDir.mkdir();
+					result = true;
+				} catch (SecurityException se) {
+					// handle it
+				}
+				if (result) {
+					// System.out.println("DIR created " + theDir.getAbsolutePath());
+					CURRENT_FOLDER_LOCATION = theDir.getAbsolutePath();
+
+				}
 			}
-			if (result) {
-				// System.out.println("DIR created " + theDir.getAbsolutePath());
-				CURRENT_FOLDER_LOCATION = theDir.getAbsolutePath();
 
-			}
 		}
+
 	}
 
 }
