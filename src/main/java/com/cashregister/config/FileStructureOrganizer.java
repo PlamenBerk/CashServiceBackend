@@ -2,6 +2,7 @@ package com.cashregister.config;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Calendar;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -9,13 +10,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileStructureOrganizer {
 
-	public static String CURRENT_FOLDER_LOCATION;
+	public static String CURRENT_FOLDER_LOCATION = "D:\\OCTOBER-2018";
 
 	// cron = "0 59 23 * * ?"
 	@Scheduled(fixedDelay = 90000)
 	public void reportCurrentTime() {
 
-		// Calendar c = Calendar.getInstance();
+		Calendar c = Calendar.getInstance();
 		// if (c.get(Calendar.DATE) == c.getActualMaximum(Calendar.DATE)) {
 
 		LocalDate futureDate = LocalDate.now().plusMonths(1);

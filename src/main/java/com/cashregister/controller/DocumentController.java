@@ -1,7 +1,7 @@
 package com.cashregister.controller;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cashregister.dto.DocumentDTO;
+import com.cashregister.model.Document;
 import com.cashregister.service.DocumentService;
 
 @CrossOrigin()
@@ -32,12 +33,12 @@ public class DocumentController {
 	@RequestMapping(value = "/document", method = RequestMethod.GET)
 	public ResponseEntity<?> getExpiredDocuments(@RequestParam("docStartDate") String startDate,
 			@RequestParam("docEndDate") String endDate) throws Exception {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 
-		String date = "16/08/2016";
+		LocalDate localStartDate = LocalDate.parse(startDate);
+		LocalDate localEndDate = LocalDate.parse(endDate);
 
-		LocalDate localDate = LocalDate.parse(date, formatter);
-		return new ResponseEntity<String>("hahaha", HttpStatus.OK);
+		return new ResponseEntity<List<Document>>(docService.getExpiredDocuments(localStartDate, localEndDate),
+				HttpStatus.OK);
 	}
 
 }

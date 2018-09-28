@@ -111,4 +111,10 @@ public class DocumentService extends BaseService {
 		getEm().persist(dbDocument);
 	}
 
+	public List<Document> getExpiredDocuments(LocalDate localStartDate, LocalDate localEndDate) {
+		List<Document> listDocs = getEm().createNamedQuery("getExpiredBetweenDates", Document.class)
+				.setParameter("startDate", localStartDate).setParameter("endDate", localEndDate).getResultList();
+		return listDocs;
+	}
+
 }
