@@ -1,6 +1,7 @@
 package com.cashregister.service;
 
 import java.io.FileOutputStream;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -11,21 +12,24 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.stereotype.Service;
 
+import com.cashregister.config.FileStructureOrganizer;
 import com.cashregister.dto.DocumentDTO;
 import com.cashregister.model.Device;
+import com.cashregister.model.Document;
 
 @Service
 @Transactional
 public class DocumentService extends BaseService {
 
+	private static final int NEXT_YEAR = 1;
 	private static final String DOC_TEMPLATE = "D://CashRegisterDocs/doc-template.docx";
-	private static final String DOC_OUTPUT_PATH = "";
 
 	public String generateDocument(DocumentDTO documentDTO) throws Exception {
 
 		Device device = getEm().find(Device.class, Integer.valueOf(documentDTO.getDeviceId()));
 
 		switch (documentDTO.getDocType()) {
+
 		case "contract":
 			XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
 			XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
@@ -34,7 +38,6 @@ public class DocumentService extends BaseService {
 				if (runs != null) {
 					for (XWPFRun r : runs) {
 						String text = r.getText(0);
-						System.out.println(r);
 						if (text != null && text.contains("clientName")) {
 							text = text.replace("clientName", device.getSite().getClient().getName());
 							r.setText(text, 0);
@@ -68,9 +71,17 @@ public class DocumentService extends BaseService {
 				}
 			}
 
-			doc.write(new FileOutputStream("D://output.docx"));
-			Runtime.getRuntime().exec("cmd /c start D:/output.docx /K ");
-			doc = docTemplate; // save da original template
+			String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
+			String docName = device.getSite().getClient().getName() + "_" + device.getDeviceModel().getManufacturer()
+					+ "_" + device.getDeviceModel().getModel() + ".docx";
+
+			doc.write(new FileOutputStream(docPath + "/" + docName));
+
+			saveDocInDB(docPath, docName);
+
+			Runtime.getRuntime().exec("cmd /c start " + docPath + "/" + docName + " /K ");
+
+			doc = docTemplate; // save the original template
 			doc.close();
 
 			break;
@@ -88,6 +99,16 @@ public class DocumentService extends BaseService {
 		}
 
 		return "Document is created!";
+	}
+
+	private void saveDocInDB(String docPath, String docName) {
+		Document dbDocument = new Document();
+		dbDocument.setDocPath(docPath);
+		dbDocument.setDocumentName(docName);
+		LocalDate startDate = LocalDate.now();
+		dbDocument.setStartDate(startDate);
+		dbDocument.setEndDate(startDate.plusYears(NEXT_YEAR));
+		getEm().persist(dbDocument);
 	}
 
 }
