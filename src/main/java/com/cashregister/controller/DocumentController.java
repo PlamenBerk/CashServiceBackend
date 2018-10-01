@@ -1,10 +1,16 @@
 package com.cashregister.controller;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,9 +48,29 @@ public class DocumentController {
 				HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/document/{documentId}", method = RequestMethod.GET)
-	public ResponseEntity<?> previewDocument(@PathVariable("documentId") Integer documentId) throws Exception {
-		return new ResponseEntity<String>(docService.previewDocument(documentId), HttpStatus.OK);
+	@RequestMapping(value = "/document/{docId}", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
+	public ResponseEntity<Resource> downloadFile(@PathVariable("docId") Integer docId, HttpServletRequest request)
+			throws Exception {
+
+		// Load file as Resource
+		Resource resource = docService.loadFileAsResource(docId);
+
+		// Try to determine file's content type
+		String contentType = null;
+		try {
+			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+		} catch (IOException ex) {
+			System.err.println("error");
+		}
+
+		// Fallback to the default content type if type could not be determined
+		if (contentType == null) {
+			contentType = "text/plain";
+		}
+
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
 	}
 
 }

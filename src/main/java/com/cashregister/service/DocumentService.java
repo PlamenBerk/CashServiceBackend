@@ -1,6 +1,11 @@
 package com.cashregister.service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,6 +15,8 @@ import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 import com.cashregister.config.FileStructureOrganizer;
@@ -123,6 +130,23 @@ public class DocumentService extends BaseService {
 		Runtime.getRuntime().exec("cmd /c start " + doc.getDocPath() + "/" + doc.getDocumentName() + " /K ");
 
 		return "ok";
+	}
+
+	public Resource loadFileAsResource(Integer docId) throws URISyntaxException, FileNotFoundException, Exception {
+		Document doc = getEm().find(Document.class, docId);
+
+		try {
+			File f = new File(doc.getDocPath() + "\\" + doc.getDocumentName());
+			URI u = f.toURI();
+			Resource resource = new UrlResource(u);
+			if (resource.exists()) {
+				return resource;
+			} else {
+				throw new FileNotFoundException("File not found " + doc.getDocumentName());
+			}
+		} catch (MalformedURLException ex) {
+			throw new FileNotFoundException("File not found " + doc.getDocumentName());
+		}
 	}
 
 }
