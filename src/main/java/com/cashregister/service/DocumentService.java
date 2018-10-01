@@ -101,7 +101,7 @@ public class DocumentService extends BaseService {
 		return "Document is created!";
 	}
 
-	private void saveDocInDB(String docPath, String docName) {
+	private void saveDocInDB(String docPath, String docName) throws Exception {
 		Document dbDocument = new Document();
 		dbDocument.setDocPath(docPath);
 		dbDocument.setDocumentName(docName);
@@ -115,6 +115,14 @@ public class DocumentService extends BaseService {
 		List<Document> listDocs = getEm().createNamedQuery("getExpiredBetweenDates", Document.class)
 				.setParameter("startDate", localStartDate).setParameter("endDate", localEndDate).getResultList();
 		return listDocs;
+	}
+
+	public String previewDocument(Integer documentId) throws Exception {
+		Document doc = getEm().find(Document.class, documentId);
+
+		Runtime.getRuntime().exec("cmd /c start " + doc.getDocPath() + "/" + doc.getDocumentName() + " /K ");
+
+		return "ok";
 	}
 
 }

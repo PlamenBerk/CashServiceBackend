@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +40,11 @@ public class DocumentController {
 
 		return new ResponseEntity<List<Document>>(docService.getExpiredDocuments(localStartDate, localEndDate),
 				HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/document/{documentId}", method = RequestMethod.GET)
+	public ResponseEntity<?> previewDocument(@PathVariable("documentId") Integer documentId) throws Exception {
+		return new ResponseEntity<String>(docService.previewDocument(documentId), HttpStatus.OK);
 	}
 
 }
