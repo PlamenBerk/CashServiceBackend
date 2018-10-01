@@ -17,30 +17,30 @@ public class FileStructureOrganizer {
 	public void reportCurrentTime() {
 
 		Calendar c = Calendar.getInstance();
-		// if (c.get(Calendar.DATE) == c.getActualMaximum(Calendar.DATE)) {
+		if (c.get(Calendar.DATE) == c.getActualMaximum(Calendar.DATE)) {
 
-		LocalDate futureDate = LocalDate.now().plusMonths(1);
+			LocalDate futureDate = LocalDate.now().plusMonths(1);
 
-		File theDir = new File("D:/" + futureDate.getMonth().name() + "-" + futureDate.getYear());
+			File theDir = new File("D:/" + futureDate.getMonth().name() + "-" + futureDate.getYear());
 
-		if (!theDir.exists()) {
-			System.out.println("creating directory: " + theDir.getName());
-			boolean result = false;
+			if (!theDir.exists()) {
+				System.out.println("creating directory: " + theDir.getName());
+				boolean result = false;
 
-			try {
-				theDir.mkdir();
-				result = true;
-			} catch (SecurityException se) {
-				// handle it
+				try {
+					theDir.mkdir();
+					result = true;
+				} catch (SecurityException se) {
+					// handle it
+				}
+				if (result) {
+					// System.out.println("DIR created " + theDir.getAbsolutePath());
+					CURRENT_FOLDER_LOCATION = theDir.getAbsolutePath();
+
+				}
 			}
-			if (result) {
-				// System.out.println("DIR created " + theDir.getAbsolutePath());
-				CURRENT_FOLDER_LOCATION = theDir.getAbsolutePath();
 
-			}
 		}
-
-		// }
 
 	}
 
