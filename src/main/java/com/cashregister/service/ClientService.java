@@ -5,6 +5,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.cashregister.dto.ClientManagerWrapperDTO;
@@ -31,6 +32,7 @@ public class ClientService extends BaseService {
 		return client;
 	}
 
+	@PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
 	public List<Client> getAllClients() throws Exception {
 		return getEm().createNamedQuery("getAllClients", Client.class).getResultList();
 	}

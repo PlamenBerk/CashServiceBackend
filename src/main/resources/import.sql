@@ -21,4 +21,5 @@ INSERT INTO `cashregister`.`device_model` (`id`, `certificate`, `device_num_pref
 INSERT INTO `cashregister`.`device` (`id`, `device_num_postfix`, `fiscal_num_postfix`, `nap_date`, `nap_number`, `sim`, `device_model_id`, `site_id`) VALUES ('1', 'devPost', 'fisclPost', '2019-09-09', 'NAPnum', 'SIMNO', '1', '1');
 INSERT INTO `cashregister`.`device` (`id`, `device_num_postfix`, `fiscal_num_postfix`, `nap_date`, `nap_number`, `sim`, `device_model_id`, `site_id`) VALUES ('2', 'devPost2', 'fisclPost2', '2019-09-09', 'NAPnum2', 'SIMNO2', '2', '1');
 
+INSERT INTO `cashregister`.`document` (`id`, `doc_path`, `document_name`, `end_date`, `start_date`) VALUES ('1', 'D:\\OCTOBER-2018', 'PeshoCl1_dateks_dt23.docx', '2019-10-02', '2018-10-02');
 

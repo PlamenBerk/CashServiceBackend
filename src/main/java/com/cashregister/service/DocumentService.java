@@ -17,6 +17,7 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.cashregister.config.FileStructureOrganizer;
@@ -124,14 +125,7 @@ public class DocumentService extends BaseService {
 		return listDocs;
 	}
 
-	public String previewDocument(Integer documentId) throws Exception {
-		Document doc = getEm().find(Document.class, documentId);
-
-		Runtime.getRuntime().exec("cmd /c start " + doc.getDocPath() + "/" + doc.getDocumentName() + " /K ");
-
-		return "ok";
-	}
-
+	@PreAuthorize("hasRole('ADMIN')")
 	public Resource loadFileAsResource(Integer docId) throws URISyntaxException, FileNotFoundException, Exception {
 		Document doc = getEm().find(Document.class, docId);
 

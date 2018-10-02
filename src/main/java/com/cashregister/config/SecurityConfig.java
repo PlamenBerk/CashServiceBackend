@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +16,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -23,9 +25,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-		http.authorizeRequests() // nl
-				.antMatchers("/", "/document-management/**").permitAll() // nl
-				.anyRequest().authenticated();
+		http.authorizeRequests(). // nl
+				antMatchers("/document-management/**").permitAll(). // nl
+				anyRequest().permitAll().and().httpBasic();
 
 		http.httpBasic().authenticationEntryPoint(basicAuthenticationPoint);
 
@@ -34,7 +36,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("learn").password("{noop}share").roles("USER");
+		auth.inMemoryAuthentication(). // nl
+				withUser("plamen").password("{noop}plamen").roles("USER"). // nl
+				and(). // nl
+				withUser("rosen").password("{noop}rosen").roles("ADMIN"); // nl
 	}
 
 	@Override

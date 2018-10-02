@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -48,9 +49,9 @@ public class DocumentController {
 				HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/document/{docId}", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
-	public ResponseEntity<Resource> downloadFile(@PathVariable("docId") Integer docId, HttpServletRequest request)
-			throws Exception {
+	@RequestMapping(value = "/document/{docId}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<Resource> downloadFile(@PathVariable("docId") Integer docId, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
 		// Load file as Resource
 		Resource resource = docService.loadFileAsResource(docId);
