@@ -1,6 +1,5 @@
 package com.cashregister.controller;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -49,27 +48,13 @@ public class DocumentController {
 				HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/document/{docId}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+	@RequestMapping(value = "/document/{docId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Resource> downloadFile(@PathVariable("docId") Integer docId, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		// Load file as Resource
 		Resource resource = docService.loadFileAsResource(docId);
 
-		// Try to determine file's content type
-		String contentType = null;
-		try {
-			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-		} catch (IOException ex) {
-			System.err.println("error");
-		}
-
-		// Fallback to the default content type if type could not be determined
-		if (contentType == null) {
-			contentType = "text/plain";
-		}
-
-		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
 				.body(resource);
 	}

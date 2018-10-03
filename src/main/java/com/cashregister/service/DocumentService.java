@@ -1,9 +1,10 @@
 package com.cashregister.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.net.MalformedURLException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
@@ -126,21 +127,26 @@ public class DocumentService extends BaseService {
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
+	public InputStream loadFileAsIs(Integer docId) throws URISyntaxException, FileNotFoundException, Exception {
+		Document doc = getEm().find(Document.class, docId);
+
+		File f = new File(doc.getDocPath() + "\\" + doc.getDocumentName());
+		InputStream stream = new FileInputStream(f);
+		return stream;
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
 	public Resource loadFileAsResource(Integer docId) throws URISyntaxException, FileNotFoundException, Exception {
 		Document doc = getEm().find(Document.class, docId);
 
-		try {
-			File f = new File(doc.getDocPath() + "\\" + doc.getDocumentName());
-			URI u = f.toURI();
-			Resource resource = new UrlResource(u);
-			if (resource.exists()) {
-				return resource;
-			} else {
-				throw new FileNotFoundException("File not found " + doc.getDocumentName());
-			}
-		} catch (MalformedURLException ex) {
+		File f = new File(doc.getDocPath() + "asd\\" + doc.getDocumentName());
+		URI u = f.toURI();
+		Resource resource = new UrlResource(u);
+		if (resource.exists()) {
+			return resource;
+		} else {
 			throw new FileNotFoundException("File not found " + doc.getDocumentName());
 		}
-	}
 
+	}
 }
