@@ -139,7 +139,7 @@ public class DocumentService extends BaseService {
 	public Resource loadFileAsResource(Integer docId) throws URISyntaxException, FileNotFoundException, Exception {
 		Document doc = getEm().find(Document.class, docId);
 
-		File f = new File(doc.getDocPath() + "asd\\" + doc.getDocumentName());
+		File f = new File(doc.getDocPath() + "\\" + doc.getDocumentName());
 		URI u = f.toURI();
 		Resource resource = new UrlResource(u);
 		if (resource.exists()) {
