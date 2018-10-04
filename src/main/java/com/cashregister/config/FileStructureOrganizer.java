@@ -11,9 +11,10 @@ import org.springframework.stereotype.Component;
 public class FileStructureOrganizer {
 
 	public static String CURRENT_FOLDER_LOCATION = "D:\\OCTOBER-2018";
+	public static String CURRENT_FOLDER_LOCATION_DEBIAN = "/home/rsa-key-20181004/OCTOBER-2018";
 
 	// cron = "0 59 23 * * ?"
-	@Scheduled(fixedDelay = 90000)
+	@Scheduled(cron = "0 59 23 * * ?")
 	public void reportCurrentTime() {
 
 		Calendar c = Calendar.getInstance();
@@ -21,7 +22,8 @@ public class FileStructureOrganizer {
 
 			LocalDate futureDate = LocalDate.now().plusMonths(1);
 
-			File theDir = new File("D:/" + futureDate.getMonth().name() + "-" + futureDate.getYear());
+			File theDir = new File(
+					CURRENT_FOLDER_LOCATION_DEBIAN + futureDate.getMonth().name() + "-" + futureDate.getYear());
 
 			if (!theDir.exists()) {
 				System.out.println("creating directory: " + theDir.getName());
@@ -34,8 +36,7 @@ public class FileStructureOrganizer {
 					// handle it
 				}
 				if (result) {
-					// System.out.println("DIR created " + theDir.getAbsolutePath());
-					CURRENT_FOLDER_LOCATION = theDir.getAbsolutePath();
+					CURRENT_FOLDER_LOCATION_DEBIAN = theDir.getAbsolutePath();
 
 				}
 			}

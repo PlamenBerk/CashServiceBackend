@@ -32,6 +32,7 @@ public class DocumentService extends BaseService {
 
 	private static final int NEXT_YEAR = 1;
 	private static final String DOC_TEMPLATE = "D://CashRegisterDocs/doc-template.docx";
+	private String DOC_TEMPLATE_DEBIAN = "/home/rsa-key-20181004/doc-template.docx";
 
 	public String generateDocument(DocumentDTO documentDTO) throws Exception {
 
@@ -40,8 +41,8 @@ public class DocumentService extends BaseService {
 		switch (documentDTO.getDocType()) {
 
 		case "contract":
-			XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
-			XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
+			XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_DEBIAN));
+			XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_DEBIAN));
 			for (XWPFParagraph p : doc.getParagraphs()) {
 				List<XWPFRun> runs = p.getRuns();
 				if (runs != null) {
@@ -80,7 +81,7 @@ public class DocumentService extends BaseService {
 				}
 			}
 
-			String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
+			String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
 			String docName = device.getSite().getClient().getName() + "_" + device.getDeviceModel().getManufacturer()
 					+ "_" + device.getDeviceModel().getModel() + ".docx";
 
@@ -88,7 +89,8 @@ public class DocumentService extends BaseService {
 
 			saveDocInDB(docPath, docName);
 
-			Runtime.getRuntime().exec("cmd /c start " + docPath + "/" + docName + " /K ");
+			// Runtime.getRuntime().exec("cmd /c start " + docPath + "/" + docName + " /K
+			// ");
 
 			doc = docTemplate; // save the original template
 			doc.close();
@@ -139,7 +141,8 @@ public class DocumentService extends BaseService {
 	public Resource loadFileAsResource(Integer docId) throws URISyntaxException, FileNotFoundException, Exception {
 		Document doc = getEm().find(Document.class, docId);
 
-		File f = new File(doc.getDocPath() + "\\" + doc.getDocumentName());
+		File f = new File(doc.getDocPath() + "/" + doc.getDocumentName());
+		System.out.println("Try to open " + f.getPath() + " ::: " + f.getAbsolutePath());
 		URI u = f.toURI();
 		Resource resource = new UrlResource(u);
 		if (resource.exists()) {
