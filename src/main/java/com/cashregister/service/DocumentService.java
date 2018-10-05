@@ -1,13 +1,12 @@
 package com.cashregister.service;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -34,7 +33,7 @@ public class DocumentService extends BaseService {
 	private static final String DOC_TEMPLATE = "D://CashRegisterDocs/doc-template.docx";
 	private String DOC_TEMPLATE_DEBIAN = "/home/rsa-key-20181004/doc-template.docx";
 
-	public String generateDocument(DocumentDTO documentDTO) throws Exception {
+	public Resource generateDocument(DocumentDTO documentDTO) throws Exception {
 
 		Device device = getEm().find(Device.class, Integer.valueOf(documentDTO.getDeviceId()));
 
@@ -83,19 +82,25 @@ public class DocumentService extends BaseService {
 
 			String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
 			String docName = device.getSite().getClient().getName() + "_" + device.getDeviceModel().getManufacturer()
-					+ "_" + device.getDeviceModel().getModel() + ".docx";
+					+ "_" + device.getDeviceModel().getModel() + "_" + device.getDeviceModel().getDeviceNumPrefix()
+					+ device.getDeviceNumPostfix() + "_" + LocalTime.now() + ".docx";
 
 			doc.write(new FileOutputStream(docPath + "/" + docName));
 
 			saveDocInDB(docPath, docName);
 
-			// Runtime.getRuntime().exec("cmd /c start " + docPath + "/" + docName + " /K
-			// ");
-
 			doc = docTemplate; // save the original template
 			doc.close();
 
-			break;
+			File f = new File(docPath + "/" + docName);
+			URI u = f.toURI();
+			Resource resource = new UrlResource(u);
+
+			if (resource.exists()) {
+				return resource;
+			} else {
+				throw new FileNotFoundException("File not found " + docName);
+			}
 
 		case "protocol":
 
@@ -109,7 +114,8 @@ public class DocumentService extends BaseService {
 			break;
 		}
 
-		return "Document is created!";
+		return null;
+
 	}
 
 	private void saveDocInDB(String docPath, String docName) throws Exception {
@@ -126,15 +132,6 @@ public class DocumentService extends BaseService {
 		List<Document> listDocs = getEm().createNamedQuery("getExpiredBetweenDates", Document.class)
 				.setParameter("startDate", localStartDate).setParameter("endDate", localEndDate).getResultList();
 		return listDocs;
-	}
-
-	@PreAuthorize("hasRole('ADMIN')")
-	public InputStream loadFileAsIs(Integer docId) throws URISyntaxException, FileNotFoundException, Exception {
-		Document doc = getEm().find(Document.class, docId);
-
-		File f = new File(doc.getDocPath() + "\\" + doc.getDocumentName());
-		InputStream stream = new FileInputStream(f);
-		return stream;
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")

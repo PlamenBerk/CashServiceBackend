@@ -32,20 +32,14 @@ public class DocumentController {
 	@Autowired
 	private DocumentService docService;
 
-	@RequestMapping(value = "/document", method = RequestMethod.POST)
-	public ResponseEntity<?> generateDocument(@RequestBody DocumentDTO documentDTO) throws Exception {
-		return new ResponseEntity<String>(docService.generateDocument(documentDTO), HttpStatus.OK);
-	}
+	@RequestMapping(value = "/document", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Resource> generateDocument(@RequestBody DocumentDTO documentDTO) throws Exception {
 
-	@RequestMapping(value = "/document", method = RequestMethod.GET)
-	public ResponseEntity<?> getExpiredDocuments(@RequestParam("docStartDate") String startDate,
-			@RequestParam("docEndDate") String endDate) throws Exception {
+		Resource resource = docService.generateDocument(documentDTO);
 
-		LocalDate localStartDate = LocalDate.parse(startDate);
-		LocalDate localEndDate = LocalDate.parse(endDate);
-
-		return new ResponseEntity<List<Document>>(docService.getExpiredDocuments(localStartDate, localEndDate),
-				HttpStatus.OK);
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
 	}
 
 	@RequestMapping(value = "/document/{docId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -57,6 +51,17 @@ public class DocumentController {
 		return ResponseEntity.ok().contentType(MediaType.parseMediaType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
 				.body(resource);
+	}
+
+	@RequestMapping(value = "/document", method = RequestMethod.GET)
+	public ResponseEntity<?> getExpiredDocuments(@RequestParam("docStartDate") String startDate,
+			@RequestParam("docEndDate") String endDate) throws Exception {
+
+		LocalDate localStartDate = LocalDate.parse(startDate);
+		LocalDate localEndDate = LocalDate.parse(endDate);
+
+		return new ResponseEntity<List<Document>>(docService.getExpiredDocuments(localStartDate, localEndDate),
+				HttpStatus.OK);
 	}
 
 }
