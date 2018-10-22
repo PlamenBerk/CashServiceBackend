@@ -10,5 +10,10 @@ public class DocumentDTO {
 
 	private String deviceId;
 	private String docType;
+	private int selectedValueValidy;
+	private int contractNumber;
+	private String fromDate;
+	private String toDate;
+	private String price;
 
 }

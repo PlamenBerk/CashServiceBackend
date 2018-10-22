@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -29,9 +28,11 @@ import com.cashregister.model.Document;
 @Transactional
 public class DocumentService extends BaseService {
 
+	private static final int NEXT_SIX_MONTHS = 6;
 	private static final int NEXT_YEAR = 1;
 	private static final String DOC_TEMPLATE = "D://CashRegisterDocs/doc-template.docx";
-	private String DOC_TEMPLATE_DEBIAN = "/home/rsa-key-20181004/doc-template.docx";
+	// private String DOC_TEMPLATE_DEBIAN =
+	// "/home/plamendanielpics/cashregister/doc-template.docx";
 
 	public Resource generateDocument(DocumentDTO documentDTO) throws Exception {
 
@@ -40,8 +41,8 @@ public class DocumentService extends BaseService {
 		switch (documentDTO.getDocType()) {
 
 		case "contract":
-			XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_DEBIAN));
-			XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_DEBIAN));
+			XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
+			XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
 			for (XWPFParagraph p : doc.getParagraphs()) {
 				List<XWPFRun> runs = p.getRuns();
 				if (runs != null) {
@@ -69,25 +70,51 @@ public class DocumentService extends BaseService {
 							r.setText(text, 0);
 						}
 						if (text != null && text.contains("deviceNum")) {
-							text = text.replace("deviceNum", device.getDeviceNumPostfix());
+							text = text.replace("deviceNum",
+									device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix());
 							r.setText(text, 0);
 						}
 						if (text != null && text.contains("fiscalNum")) {
-							text = text.replace("fiscalNum", device.getFiscalNumPostfix());
+							text = text.replace("fiscalNum",
+									device.getDeviceModel().getFiscalNumPrefix() + device.getFiscalNumPostfix());
+							r.setText(text, 0);
+						}
+						if (text != null && text.contains("contractNumber")) {
+							text = text.replace("contractNumber", String.valueOf(documentDTO.getContractNumber()));
+							r.setText(text, 0);
+						}
+						if (text != null && text.contains("contractDateHeader")) {
+							text = text.replace("contractDateHeader", documentDTO.getFromDate());
+							r.setText(text, 0);
+						}
+						if (text != null && text.contains("dateFrom")) {
+							text = text.replace("dateFrom", documentDTO.getFromDate());
+							r.setText(text, 0);
+						}
+						if (text != null && text.contains("dateTo")) {
+							text = text.replace("dateTo", documentDTO.getToDate());
+							r.setText(text, 0);
+						}
+						if (text != null && text.contains("price")) {
+							text = text.replace("price", documentDTO.getPrice());
+							r.setText(text, 0);
+						}
+						if (text != null && text.contains("currentDate")) {
+							text = text.replace("currentDate", documentDTO.getFromDate());
 							r.setText(text, 0);
 						}
 					}
 				}
 			}
 
-			String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
+			String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
 			String docName = device.getSite().getClient().getName() + "_" + device.getDeviceModel().getManufacturer()
 					+ "_" + device.getDeviceModel().getModel() + "_" + device.getDeviceModel().getDeviceNumPrefix()
-					+ device.getDeviceNumPostfix() + "_" + LocalTime.now() + ".docx";
+					+ device.getDeviceNumPostfix() + "_" + LocalDate.now() + ".docx";
 
 			doc.write(new FileOutputStream(docPath + "/" + docName));
 
-			saveDocInDB(docPath, docName);
+			saveDocInDB(docPath, docName, documentDTO.getSelectedValueValidy());
 
 			doc = docTemplate; // save the original template
 			doc.close();
@@ -118,13 +145,17 @@ public class DocumentService extends BaseService {
 
 	}
 
-	private void saveDocInDB(String docPath, String docName) throws Exception {
+	private void saveDocInDB(String docPath, String docName, int valid) throws Exception {
 		Document dbDocument = new Document();
 		dbDocument.setDocPath(docPath);
 		dbDocument.setDocumentName(docName);
 		LocalDate startDate = LocalDate.now();
 		dbDocument.setStartDate(startDate);
-		dbDocument.setEndDate(startDate.plusYears(NEXT_YEAR));
+		if (valid == 6) {
+			dbDocument.setEndDate(startDate.plusMonths(NEXT_SIX_MONTHS));
+		} else {
+			dbDocument.setEndDate(startDate.plusYears(NEXT_YEAR));
+		}
 		getEm().persist(dbDocument);
 	}
 
