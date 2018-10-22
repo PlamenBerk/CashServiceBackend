@@ -30,9 +30,9 @@ public class DocumentService extends BaseService {
 
 	private static final int NEXT_SIX_MONTHS = 6;
 	private static final int NEXT_YEAR = 1;
-	private static final String DOC_TEMPLATE = "D://CashRegisterDocs/doc-template.docx";
-	// private String DOC_TEMPLATE_DEBIAN =
-	// "/home/plamendanielpics/cashregister/doc-template.docx";
+	// private static final String DOC_TEMPLATE =
+	// "D://CashRegisterDocs/doc-template.docx";
+	private String DOC_TEMPLATE_DEBIAN = "/home/plamendanielpics/cashregister/doc-template.docx";
 
 	public Resource generateDocument(DocumentDTO documentDTO) throws Exception {
 
@@ -41,8 +41,8 @@ public class DocumentService extends BaseService {
 		switch (documentDTO.getDocType()) {
 
 		case "contract":
-			XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
-			XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
+			XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_DEBIAN));
+			XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_DEBIAN));
 			for (XWPFParagraph p : doc.getParagraphs()) {
 				List<XWPFRun> runs = p.getRuns();
 				if (runs != null) {
@@ -107,7 +107,7 @@ public class DocumentService extends BaseService {
 				}
 			}
 
-			String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
+			String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
 			String docName = device.getSite().getClient().getName() + "_" + device.getDeviceModel().getManufacturer()
 					+ "_" + device.getDeviceModel().getModel() + "_" + device.getDeviceModel().getDeviceNumPrefix()
 					+ device.getDeviceNumPostfix() + "_" + LocalDate.now() + ".docx";
