@@ -6,14 +6,11 @@ import lombok.Setter;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PUBLIC)
-public class DocumentDTO {
+public class CertificateDTO {
 
 	private String deviceId;
 	private String docType;
-	private int selectedValueValidy;
-	private String contractNumber;
-	private String fromDate;
-	private String toDate;
-	private String price;
+	private String certNumber;
+	private String contractDate;
 
 }

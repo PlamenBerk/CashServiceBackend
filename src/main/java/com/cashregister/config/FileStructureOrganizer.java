@@ -2,28 +2,56 @@ package com.cashregister.config;
 
 import java.io.File;
 import java.time.LocalDate;
-import java.util.Calendar;
 
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import javax.annotation.PostConstruct;
 
-@Component
-public class FileStructureOrganizer {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
-	// public static String CURRENT_FOLDER_LOCATION = "D:\\OCTOBER-2018";
-	public static String CURRENT_FOLDER_LOCATION_DEBIAN = "/home/plamendanielpics/cashregister/OCTOBER-2018";
+import com.cashregister.model.DateEntity;
+import com.cashregister.service.BaseService;
 
-	// cron = "0 59 23 * * ?"
-	@Scheduled(cron = "0 59 23 * * ?")
-	public void reportCurrentTime() {
+@Service
+public class FileStructureOrganizer extends BaseService {
 
-		Calendar c = Calendar.getInstance();
-		if (c.get(Calendar.DATE) == c.getActualMaximum(Calendar.DATE)) {
+	// public static String CURRENT_FOLDER_LOCATION = "D:\\clientDocuments\\";
+	public static String CURRENT_FOLDER_LOCATION_DEBIAN = "/home/plamendanielpics/cashregister/clientDocuments/OCTOBER-2018";
 
-			LocalDate futureDate = LocalDate.now().plusMonths(1);
+	@Autowired
+	@Qualifier("transactionManager")
+	protected PlatformTransactionManager txManager;
+
+	@PostConstruct
+	public void folderOrganizer() {
+
+		final DateEntity dateEntity = getEm().find(DateEntity.class, 1);
+		final LocalDate cuurentDate = LocalDate.now();
+
+		if (cuurentDate.getMonthValue() > dateEntity.getMonth()) {
+
+			// In the @PostConstruct (as with the afterPropertiesSet from the
+			// InitializingBean interface)
+			// there is no way to ensure that all the post processing is already done, so
+			// (indeed) there can
+			// be no Transactions. The only way to ensure that that is working is by using a
+			// TransactionTemplate.
+
+			TransactionTemplate tmpl = new TransactionTemplate(txManager);
+			tmpl.execute(new TransactionCallbackWithoutResult() {
+				@Override
+				protected void doInTransactionWithoutResult(TransactionStatus status) {
+					dateEntity.setMonth(cuurentDate.getMonthValue());
+					getEm().merge(dateEntity);
+				}
+			});
 
 			File theDir = new File(
-					CURRENT_FOLDER_LOCATION_DEBIAN + futureDate.getMonth().name() + "-" + futureDate.getYear());
+					CURRENT_FOLDER_LOCATION_DEBIAN + cuurentDate.getMonth().name() + "-" + cuurentDate.getYear());
 
 			if (!theDir.exists()) {
 				System.out.println("creating directory: " + theDir.getName());
@@ -33,14 +61,12 @@ public class FileStructureOrganizer {
 					theDir.mkdir();
 					result = true;
 				} catch (SecurityException se) {
-					// handle it
+					System.err.println(se.getMessage());
 				}
 				if (result) {
 					CURRENT_FOLDER_LOCATION_DEBIAN = theDir.getAbsolutePath();
-
 				}
 			}
-
 		}
 
 	}
