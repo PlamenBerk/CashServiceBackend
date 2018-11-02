@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import com.cashregister.config.FileStructureOrganizer;
 import com.cashregister.dto.CertificateDTO;
 import com.cashregister.dto.DocumentDTO;
+import com.cashregister.dto.ProtocolDTO;
 import com.cashregister.model.Device;
 import com.cashregister.model.Document;
 
@@ -34,13 +36,19 @@ public class DocumentService extends BaseService {
 
 	private static final int NEXT_SIX_MONTHS = 6;
 	private static final int NEXT_YEAR = 1;
+
 	private static final String DOC_TEMPLATE = "D://CashRegisterDocs/doc-template.docx";
 	private static final String DOC_TEMPLATE_CERT = "D://CashRegisterDocs/svidetelstvo_template.docx";
+	private static final String DOC_TEMPLATE_PROTOCOL = "D://CashRegisterDocs/protocol_template.docx";
+
 	// private String DOC_TEMPLATE_DEBIAN =
 	// "/home/plamendanielpics/cashregister/doc-template.docx";
 
-	// private String DOC_TEMPLATE_DEBIAN =
+	// private String DOC_TEMPLATE_DEBIAN_CERT =
 	// "/home/plamendanielpics/cashregister/svidetelstvo_template.docx";
+
+	// private String DOC_TEMPLATE_DEBIAN_PROTOCOL =
+	// "/home/plamendanielpics/cashregister/protocol_template.docx";
 
 	public Resource generateDocument(DocumentDTO documentDTO) throws Exception {
 
@@ -58,7 +66,10 @@ public class DocumentService extends BaseService {
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("clientBulstat")) {
-						text = text.replace("clientBulstat", device.getSite().getClient().getBulstat());
+						String clientBulstatOrEGN = device.getSite().getClient().getBulstat().length() < 3
+								? device.getSite().getClient().getEGN()
+								: device.getSite().getClient().getBulstat();
+						text = text.replace("clientBulstat", clientBulstatOrEGN);
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("clientAddress")) {
@@ -123,6 +134,7 @@ public class DocumentService extends BaseService {
 
 		doc = docTemplate; // save the original template
 		doc.close();
+		docTemplate.close();
 
 		File f = new File(docPath + "/" + docName);
 		URI u = f.toURI();
@@ -140,7 +152,7 @@ public class DocumentService extends BaseService {
 			throws FileNotFoundException, IOException, InvalidFormatException {
 		Device device = getEm().find(Device.class, Integer.valueOf(certificateDTO.getDeviceId()));
 
-		Document docFromDB = getEm().createNamedQuery("getDocumentByDeviceId", Document.class)
+		Document docFromDB = getEm().createNamedQuery("getDocumentByDeviceId", Document.class).setMaxResults(1)
 				.setParameter("pDeviceId", device.getId()).getSingleResult();
 
 		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_CERT));
@@ -232,6 +244,163 @@ public class DocumentService extends BaseService {
 
 		doc = docTemplate; // save the original template
 		doc.close();
+		docTemplate.close();
+
+		File f = new File(docPath + "/" + docName);
+		URI u = f.toURI();
+		Resource resource = new UrlResource(u);
+
+		if (resource.exists()) {
+			return resource;
+		} else {
+			throw new FileNotFoundException("File not found " + docName);
+		}
+	}
+
+	public Resource generateDocumentProtocol(ProtocolDTO protocolDTO) throws InvalidFormatException, IOException {
+		Device device = getEm().find(Device.class, Integer.valueOf(protocolDTO.getDeviceId()));
+
+		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_PROTOCOL));
+		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_PROTOCOL));
+		for (XWPFParagraph p : doc.getParagraphs()) {
+			List<XWPFRun> runs = p.getRuns();
+			if (runs != null) {
+				for (XWPFRun r : runs) {
+					String text = r.getText(0);
+					if (text != null && text.contains("currDate")) {
+						LocalDate localDate = LocalDate.now();
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+						String formattedStringDate = localDate.format(formatter);
+						text = text.replace("currDate", formattedStringDate);
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("currenttime")) {
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+						LocalTime time = LocalTime.now();
+						String f = formatter.format(time);
+						text = text.replace("currenttime", f);
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("egnorbulstat")) {
+						String egnOrBulstat = device.getSite().getClient().getBulstat().length() < 3
+								? device.getSite().getClient().getEGN()
+								: device.getSite().getClient().getBulstat();
+						text = text.replace("egnorbulstat", egnOrBulstat);
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("clientName")) {
+						text = text.replace("clientName", device.getSite().getClient().getName());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("clientaddress")) {
+						text = text.replace("clientaddress", device.getSite().getClient().getAddress());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("managerName")) {
+						text = text.replace("managerName", device.getSite().getClient().getManager().getName());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("siteName")) {
+						text = text.replace("siteName", device.getSite().getName());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("siteAddress")) {
+						text = text.replace("siteAddress", device.getSite().getAddress());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("sitePhone")) {
+						text = text.replace("sitePhone", device.getSite().getPhone());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("deviceManuf")) {
+						text = text.replace("deviceManuf", device.getDeviceModel().getManufacturer());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("deviceModel")) {
+						text = text.replace("deviceModel", device.getDeviceModel().getModel());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("devCert")) {
+						text = text.replace("devCert", device.getDeviceModel().getCertificate());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("deviceModelManuf")) {
+						text = text.replace("deviceModelManuf", device.getDeviceModel().getManufacturer());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("EIKDEVICEMODEL")) {
+						text = text.replace("EIKDEVICEMODEL", device.getDeviceModel().getEik());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("deviceNum")) {
+						text = text.replace("deviceNum",
+								device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("fiscalNum")) {
+						text = text.replace("fiscalNum",
+								device.getDeviceModel().getFiscalNumPrefix() + device.getFiscalNumPostfix());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("freeText")) {
+						text = text.replace("freeText", protocolDTO.getReason());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("deviceDateCreation")) {
+						LocalDate localDate = device.getDateOfCreation();
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+						String formattedStringDate = localDate.format(formatter);
+						text = text.replace("deviceDateCreation", formattedStringDate);
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("justPrice")) {
+						text = text.replace("justPrice", protocolDTO.getPrice());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("aPrice")) {
+						text = text.replace("aPrice", protocolDTO.getAprice());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("bPrice")) {
+						text = text.replace("bPrice", protocolDTO.getBprice());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("vPrice")) {
+						text = text.replace("vPrice", protocolDTO.getVprice());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("gPrice")) {
+						text = text.replace("gPrice", protocolDTO.getGprice());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("TDD")) {
+						text = text.replace("TDD", device.getSite().getClient().getTDD());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("TDD")) {
+						text = text.replace("TDD", device.getSite().getClient().getTDD());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("managerName")) {
+						text = text.replace("managerName", device.getSite().getClient().getManager().getName());
+						r.setText(text, 0);
+					}
+
+				}
+			}
+		}
+
+		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
+		String docName = "protocol_" + device.getSite().getClient().getName() + "_"
+				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
+				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
+				+ ".docx";
+
+		doc.write(new FileOutputStream(docPath + "/" + docName));
+
+		doc = docTemplate; // save the original template
+		doc.close();
+		docTemplate.close();
 
 		File f = new File(docPath + "/" + docName);
 		URI u = f.toURI();

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cashregister.dto.CertificateDTO;
 import com.cashregister.dto.DocumentDTO;
+import com.cashregister.dto.ProtocolDTO;
 import com.cashregister.model.Document;
 import com.cashregister.service.DocumentService;
 
@@ -47,6 +48,16 @@ public class DocumentController {
 	public ResponseEntity<Resource> generateDocumentCert(@RequestBody CertificateDTO certificateDTO) throws Exception {
 
 		Resource resource = docService.generateDocumentCertificate(certificateDTO);
+
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
+	}
+
+	@RequestMapping(value = "/document-protocol", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Resource> generateDocumentProtocol(@RequestBody ProtocolDTO protocolDTO) throws Exception {
+
+		Resource resource = docService.generateDocumentProtocol(protocolDTO);
 
 		return ResponseEntity.ok().contentType(MediaType.parseMediaType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
