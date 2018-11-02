@@ -41,6 +41,9 @@ public class Device extends BaseModel {
 	@Column
 	private LocalDate napDate;
 
+	@Column
+	private LocalDate dateOfCreation;
+
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 	@JsonIdentityReference(alwaysAsId = true)
 	@ManyToOne(fetch = FetchType.EAGER)

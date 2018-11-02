@@ -1,0 +1,1 @@
+INSERT INTO `cashregister`.`date_entity` (`id`, `month`) VALUES ('1', '-1');

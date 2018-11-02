@@ -32,4 +32,7 @@ public class DeviceModel extends BaseModel {
 	@Column
 	private String fiscalNumPrefix;
 
+	@Column
+	private String eik;
+
 }

@@ -19,8 +19,9 @@ import com.cashregister.service.BaseService;
 @Service
 public class FileStructureOrganizer extends BaseService {
 
-	// public static String CURRENT_FOLDER_LOCATION = "D:\\clientDocuments\\";
-	public static String CURRENT_FOLDER_LOCATION_DEBIAN = "/home/plamendanielpics/cashregister/clientDocuments/OCTOBER-2018";
+	public static String CURRENT_FOLDER_LOCATION = "D:\\clientDocuments\\";
+	// public static String CURRENT_FOLDER_LOCATION_DEBIAN =
+	// "/home/plamendanielpics/cashregister/clientDocuments/OCTOBER-2018";
 
 	@Autowired
 	@Qualifier("transactionManager")
@@ -51,7 +52,7 @@ public class FileStructureOrganizer extends BaseService {
 			});
 
 			File theDir = new File(
-					CURRENT_FOLDER_LOCATION_DEBIAN + cuurentDate.getMonth().name() + "-" + cuurentDate.getYear());
+					CURRENT_FOLDER_LOCATION + cuurentDate.getMonth().name() + "-" + cuurentDate.getYear());
 
 			if (!theDir.exists()) {
 				System.out.println("creating directory: " + theDir.getName());
@@ -64,7 +65,7 @@ public class FileStructureOrganizer extends BaseService {
 					System.err.println(se.getMessage());
 				}
 				if (result) {
-					CURRENT_FOLDER_LOCATION_DEBIAN = theDir.getAbsolutePath();
+					CURRENT_FOLDER_LOCATION = theDir.getAbsolutePath();
 				}
 			}
 		}

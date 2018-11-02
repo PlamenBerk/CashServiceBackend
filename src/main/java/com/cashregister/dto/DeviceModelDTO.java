@@ -13,5 +13,6 @@ public class DeviceModelDTO {
 	private String certificate;
 	private String deviceNumPrefix;
 	private String fiscalNumPrefix;
+	private String eik;
 
 }

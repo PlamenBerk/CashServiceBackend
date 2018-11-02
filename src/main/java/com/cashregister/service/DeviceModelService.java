@@ -35,6 +35,7 @@ public class DeviceModelService extends BaseService {
 		deviceModel.setFiscalNumPrefix(deviceModelDTO.getFiscalNumPrefix());
 		deviceModel.setManufacturer(deviceModelDTO.getManufacturer());
 		deviceModel.setModel(deviceModelDTO.getModel());
+		deviceModel.setEik(deviceModelDTO.getEik());
 
 		return deviceModel;
 	}

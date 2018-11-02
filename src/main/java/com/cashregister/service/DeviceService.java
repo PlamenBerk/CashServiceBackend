@@ -1,5 +1,6 @@
 package com.cashregister.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -27,6 +28,7 @@ public class DeviceService extends BaseService {
 
 		device.setSite(site);
 		device.setDeviceModel(deviceModel);
+		device.setDateOfCreation(LocalDate.now());
 
 		getEm().persist(device);
 

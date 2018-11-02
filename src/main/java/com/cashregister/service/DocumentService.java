@@ -39,6 +39,9 @@ public class DocumentService extends BaseService {
 	// private String DOC_TEMPLATE_DEBIAN =
 	// "/home/plamendanielpics/cashregister/doc-template.docx";
 
+	// private String DOC_TEMPLATE_DEBIAN =
+	// "/home/plamendanielpics/cashregister/svidetelstvo_template.docx";
+
 	public Resource generateDocument(DocumentDTO documentDTO) throws Exception {
 
 		Device device = getEm().find(Device.class, Integer.valueOf(documentDTO.getDeviceId()));
@@ -108,7 +111,7 @@ public class DocumentService extends BaseService {
 			}
 		}
 
-		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
+		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
 		String docName = "contract_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
@@ -205,7 +208,10 @@ public class DocumentService extends BaseService {
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("contractD")) {
-						text = text.replace("contractD", certificateDTO.getContractDate());
+						LocalDate date = docFromDB.getStartDate();
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+						String formattedStringDate = date.format(formatter);
+						text = text.replace("contractD", formattedStringDate);
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("contractNumber")) {
@@ -216,7 +222,7 @@ public class DocumentService extends BaseService {
 			}
 		}
 
-		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
+		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
 		String docName = "certificate_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
