@@ -1,5 +1,8 @@
 package com.cashregister.mapper.impl;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.stereotype.Component;
 
 import com.cashregister.dto.DeviceDTO;
@@ -14,11 +17,12 @@ public class DeviceMapperImpl implements DeviceMapper {
 		if (deviceDTO == null) {
 			return null;
 		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
 		Device device = new Device();
 		device.setDeviceNumPostfix(deviceDTO.getDeviceNumPostfix());
 		device.setFiscalNumPostfix(deviceDTO.getFiscalNumPostfix());
-		device.setNapDate(deviceDTO.getNapDate());
+		device.setNapDate(LocalDate.parse(deviceDTO.getNapDate(), formatter));
 		device.setNapNumber(deviceDTO.getNapNumber());
 		device.setSim(deviceDTO.getSim());
 

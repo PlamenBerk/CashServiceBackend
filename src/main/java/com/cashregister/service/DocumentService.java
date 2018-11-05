@@ -41,14 +41,11 @@ public class DocumentService extends BaseService {
 	private static final String DOC_TEMPLATE_CERT = "D://CashRegisterDocs/svidetelstvo_template.docx";
 	private static final String DOC_TEMPLATE_PROTOCOL = "D://CashRegisterDocs/protocol_template.docx";
 
-	// private String DOC_TEMPLATE_DEBIAN =
-	// "/home/plamendanielpics/cashregister/doc-template.docx";
-
-	// private String DOC_TEMPLATE_DEBIAN_CERT =
-	// "/home/plamendanielpics/cashregister/svidetelstvo_template.docx";
-
-	// private String DOC_TEMPLATE_DEBIAN_PROTOCOL =
-	// "/home/plamendanielpics/cashregister/protocol_template.docx";
+//	private String DOC_TEMPLATE_DEBIAN = "/home/plamendanielpics/cashregister/doc-template.docx";
+//
+//	private String DOC_TEMPLATE_CERT_DEBIAN = "/home/plamendanielpics/cashregister/svidetelstvo_template.docx";
+//
+//	private String DOC_TEMPLATE_PROTOCOL_DEBIAN = "/home/plamendanielpics/cashregister/protocol_template.docx";
 
 	public Resource generateDocument(DocumentDTO documentDTO) throws Exception {
 
@@ -99,15 +96,22 @@ public class DocumentService extends BaseService {
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("contractDateHeader")) {
-						text = text.replace("contractDateHeader", documentDTO.getFromDate());
+						text = text.replace("contractDateHeader", documentDTO.getFromDate().toString());
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("dateFrom")) {
-						text = text.replace("dateFrom", documentDTO.getFromDate());
+						text = text.replace("dateFrom", documentDTO.getFromDate().toString());
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("dateTo")) {
-						text = text.replace("dateTo", documentDTO.getToDate());
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+						LocalDate endDate = LocalDate.parse(documentDTO.getFromDate(), formatter);
+						if (documentDTO.getSelectedValueValidy() == 6) {
+							endDate = endDate.plusMonths(NEXT_SIX_MONTHS);
+						} else {
+							endDate = endDate.plusYears(NEXT_YEAR);
+						}
+						text = text.replace("dateTo", endDate.format(formatter));
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("price")) {
@@ -115,7 +119,7 @@ public class DocumentService extends BaseService {
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("currentDate")) {
-						text = text.replace("currentDate", documentDTO.getFromDate());
+						text = text.replace("currentDate", documentDTO.getFromDate().toString());
 						r.setText(text, 0);
 					}
 				}
@@ -130,7 +134,8 @@ public class DocumentService extends BaseService {
 
 		doc.write(new FileOutputStream(docPath + "/" + docName));
 
-		saveDocInDB(docPath, docName, documentDTO.getSelectedValueValidy(), documentDTO.getContractNumber(), device);
+		saveDocInDB(docPath, docName, documentDTO.getSelectedValueValidy(), documentDTO.getContractNumber(), device,
+				documentDTO.getFromDate());
 
 		doc = docTemplate; // save the original template
 		doc.close();
@@ -246,6 +251,15 @@ public class DocumentService extends BaseService {
 		doc.close();
 		docTemplate.close();
 
+		if (device.getDateOfUsage() == null) {
+			device.setDateOfUsage(LocalDate.now());
+		}
+
+		if (device.getIsNewFiscalNum()) {
+			device.setDateOfUsage(LocalDate.now());
+			device.setIsNewFiscalNum(false);
+		}
+
 		File f = new File(docPath + "/" + docName);
 		URI u = f.toURI();
 		Resource resource = new UrlResource(u);
@@ -347,7 +361,7 @@ public class DocumentService extends BaseService {
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("deviceDateCreation")) {
-						LocalDate localDate = device.getDateOfCreation();
+						LocalDate localDate = device.getDateOfUsage();
 						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 						String formattedStringDate = localDate.format(formatter);
 						text = text.replace("deviceDateCreation", formattedStringDate);
@@ -413,14 +427,15 @@ public class DocumentService extends BaseService {
 		}
 	}
 
-	private void saveDocInDB(String docPath, String docName, int valid, String contractNumber, Device device)
-			throws Exception {
+	private void saveDocInDB(String docPath, String docName, int valid, String contractNumber, Device device,
+			String fromDate) throws Exception {
 		Document dbDocument = new Document();
 		dbDocument.setDevice(device);
 		dbDocument.setDocNumber(contractNumber);
 		dbDocument.setDocPath(docPath);
 		dbDocument.setDocumentName(docName);
-		LocalDate startDate = LocalDate.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		LocalDate startDate = LocalDate.parse(fromDate, formatter);
 		dbDocument.setStartDate(startDate);
 		if (valid == 6) {
 			dbDocument.setEndDate(startDate.plusMonths(NEXT_SIX_MONTHS));

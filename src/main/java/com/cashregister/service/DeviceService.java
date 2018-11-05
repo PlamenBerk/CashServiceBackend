@@ -1,6 +1,7 @@
 package com.cashregister.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -28,7 +29,7 @@ public class DeviceService extends BaseService {
 
 		device.setSite(site);
 		device.setDeviceModel(deviceModel);
-		device.setDateOfCreation(LocalDate.now());
+		device.setIsNewFiscalNum(false);
 
 		getEm().persist(device);
 
@@ -41,10 +42,16 @@ public class DeviceService extends BaseService {
 	}
 
 	public Device updateDevice(DeviceDTO deviceDTO, Integer deviceId) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		Device device = getEm().find(Device.class, deviceId);
 		device.setDeviceNumPostfix(deviceDTO.getDeviceNumPostfix());
+
+		if (!(deviceDTO.getFiscalNumPostfix().equals(device.getFiscalNumPostfix()))) {
+			device.setIsNewFiscalNum(true);
+		}
+
 		device.setFiscalNumPostfix(deviceDTO.getFiscalNumPostfix());
-		device.setNapDate(deviceDTO.getNapDate());
+		device.setNapDate(LocalDate.parse(deviceDTO.getNapDate(), formatter));
 		device.setNapNumber(deviceDTO.getNapNumber());
 		device.setSim(deviceDTO.getSim());
 

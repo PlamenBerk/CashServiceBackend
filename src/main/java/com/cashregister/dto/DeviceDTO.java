@@ -1,7 +1,5 @@
 package com.cashregister.dto;
 
-import java.time.LocalDate;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +12,6 @@ public class DeviceDTO {
 	private String deviceNumPostfix;
 	private String fiscalNumPostfix;
 	private String napNumber;
-	private LocalDate napDate;
+	private String napDate;
 
 }

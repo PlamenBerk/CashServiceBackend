@@ -13,7 +13,6 @@ public class DocumentDTO {
 	private int selectedValueValidy;
 	private String contractNumber;
 	private String fromDate;
-	private String toDate;
 	private String price;
 
 }

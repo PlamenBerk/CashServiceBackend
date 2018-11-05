@@ -1,6 +1,7 @@
 package com.cashregister.controller;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,8 +80,9 @@ public class DocumentController {
 	public ResponseEntity<?> getExpiredDocuments(@RequestParam("docStartDate") String startDate,
 			@RequestParam("docEndDate") String endDate) throws Exception {
 
-		LocalDate localStartDate = LocalDate.parse(startDate);
-		LocalDate localEndDate = LocalDate.parse(endDate);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		LocalDate localStartDate = LocalDate.parse(startDate, formatter);
+		LocalDate localEndDate = LocalDate.parse(endDate, formatter);
 
 		return new ResponseEntity<List<Document>>(docService.getExpiredDocuments(localStartDate, localEndDate),
 				HttpStatus.OK);

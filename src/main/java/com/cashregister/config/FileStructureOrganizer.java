@@ -21,7 +21,7 @@ public class FileStructureOrganizer extends BaseService {
 
 	public static String CURRENT_FOLDER_LOCATION = "D:\\clientDocuments\\";
 	// public static String CURRENT_FOLDER_LOCATION_DEBIAN =
-	// "/home/plamendanielpics/cashregister/clientDocuments/OCTOBER-2018";
+	// "/home/plamendanielpics/cashregister/clientDocuments/";
 
 	@Autowired
 	@Qualifier("transactionManager")
@@ -29,12 +29,13 @@ public class FileStructureOrganizer extends BaseService {
 
 	@PostConstruct
 	public void folderOrganizer() {
-
+		System.out.println("initializing folder organizer");
 		final DateEntity dateEntity = getEm().find(DateEntity.class, 1);
 		final LocalDate cuurentDate = LocalDate.now();
 
 		if (cuurentDate.getMonthValue() > dateEntity.getMonth()) {
 
+			// ***
 			// In the @PostConstruct (as with the afterPropertiesSet from the
 			// InitializingBean interface)
 			// there is no way to ensure that all the post processing is already done, so
@@ -68,6 +69,10 @@ public class FileStructureOrganizer extends BaseService {
 					CURRENT_FOLDER_LOCATION = theDir.getAbsolutePath();
 				}
 			}
+		} else {
+			CURRENT_FOLDER_LOCATION = CURRENT_FOLDER_LOCATION + cuurentDate.getMonth().name() + "-"
+					+ cuurentDate.getYear();
+			System.err.println(CURRENT_FOLDER_LOCATION);
 		}
 
 	}

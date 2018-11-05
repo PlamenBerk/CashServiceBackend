@@ -42,7 +42,10 @@ public class Device extends BaseModel {
 	private LocalDate napDate;
 
 	@Column
-	private LocalDate dateOfCreation;
+	private LocalDate dateOfUsage;
+
+	@Column
+	private Boolean isNewFiscalNum;
 
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 	@JsonIdentityReference(alwaysAsId = true)
