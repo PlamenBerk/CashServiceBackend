@@ -37,22 +37,25 @@ public class DocumentService extends BaseService {
 	private static final int NEXT_SIX_MONTHS = 6;
 	private static final int NEXT_YEAR = 1;
 
-	private static final String DOC_TEMPLATE = "D://CashRegisterDocs/doc-template.docx";
-	private static final String DOC_TEMPLATE_CERT = "D://CashRegisterDocs/svidetelstvo_template.docx";
-	private static final String DOC_TEMPLATE_PROTOCOL = "D://CashRegisterDocs/protocol_template.docx";
+	// private static final String DOC_TEMPLATE =
+	// "D://CashRegisterDocs/doc-template.docx";
+	// private static final String DOC_TEMPLATE_CERT =
+	// "D://CashRegisterDocs/svidetelstvo_template.docx";
+	// private static final String DOC_TEMPLATE_PROTOCOL =
+	// "D://CashRegisterDocs/protocol_template.docx";
 
-//	private String DOC_TEMPLATE_DEBIAN = "/home/plamendanielpics/cashregister/doc-template.docx";
-//
-//	private String DOC_TEMPLATE_CERT_DEBIAN = "/home/plamendanielpics/cashregister/svidetelstvo_template.docx";
-//
-//	private String DOC_TEMPLATE_PROTOCOL_DEBIAN = "/home/plamendanielpics/cashregister/protocol_template.docx";
+	private String DOC_TEMPLATE_DEBIAN = "/home/plamendanielpics/cashregister/doc-template.docx";
+
+	private String DOC_TEMPLATE_CERT_DEBIAN = "/home/plamendanielpics/cashregister/svidetelstvo_template.docx";
+
+	private String DOC_TEMPLATE_PROTOCOL_DEBIAN = "/home/plamendanielpics/cashregister/protocol_template.docx";
 
 	public Resource generateDocument(DocumentDTO documentDTO) throws Exception {
 
 		Device device = getEm().find(Device.class, Integer.valueOf(documentDTO.getDeviceId()));
 
-		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
-		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
+		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_DEBIAN));
+		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_DEBIAN));
 		for (XWPFParagraph p : doc.getParagraphs()) {
 			List<XWPFRun> runs = p.getRuns();
 			if (runs != null) {
@@ -126,7 +129,7 @@ public class DocumentService extends BaseService {
 			}
 		}
 
-		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
+		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
 		String docName = "contract_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
@@ -160,18 +163,17 @@ public class DocumentService extends BaseService {
 		Document docFromDB = getEm().createNamedQuery("getDocumentByDeviceId", Document.class).setMaxResults(1)
 				.setParameter("pDeviceId", device.getId()).getSingleResult();
 
-		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_CERT));
-		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_CERT));
+		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_CERT_DEBIAN));
+		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_CERT_DEBIAN));
 		for (XWPFParagraph p : doc.getParagraphs()) {
 			List<XWPFRun> runs = p.getRuns();
 			if (runs != null) {
 				for (XWPFRun r : runs) {
 					String text = r.getText(0);
 					if (text != null && text.contains("currDate")) {
-						LocalDate localDate = LocalDate.now();
-						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-						String formattedStringDate = localDate.format(formatter);
-						text = text.replace("currDate", formattedStringDate);
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+						LocalDate date = LocalDate.parse(certificateDTO.getFromDateStr(), formatter);
+						text = text.replace("currDate", date.format(formatter));
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("svidNum")) {
@@ -226,7 +228,7 @@ public class DocumentService extends BaseService {
 					}
 					if (text != null && text.contains("contractD")) {
 						LocalDate date = docFromDB.getStartDate();
-						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 						String formattedStringDate = date.format(formatter);
 						text = text.replace("contractD", formattedStringDate);
 						r.setText(text, 0);
@@ -239,7 +241,7 @@ public class DocumentService extends BaseService {
 			}
 		}
 
-		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
+		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
 		String docName = "certificate_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
@@ -274,8 +276,8 @@ public class DocumentService extends BaseService {
 	public Resource generateDocumentProtocol(ProtocolDTO protocolDTO) throws InvalidFormatException, IOException {
 		Device device = getEm().find(Device.class, Integer.valueOf(protocolDTO.getDeviceId()));
 
-		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_PROTOCOL));
-		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_PROTOCOL));
+		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_PROTOCOL_DEBIAN));
+		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_PROTOCOL_DEBIAN));
 		for (XWPFParagraph p : doc.getParagraphs()) {
 			List<XWPFRun> runs = p.getRuns();
 			if (runs != null) {
@@ -404,7 +406,7 @@ public class DocumentService extends BaseService {
 			}
 		}
 
-		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
+		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
 		String docName = "protocol_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()

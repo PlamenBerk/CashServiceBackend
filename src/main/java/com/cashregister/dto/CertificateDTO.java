@@ -9,6 +9,7 @@ import lombok.Setter;
 public class CertificateDTO {
 
 	private String deviceId;
+	private String fromDateStr;
 	private String certNumber;
 
 }
