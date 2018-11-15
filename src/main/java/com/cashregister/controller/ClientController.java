@@ -24,20 +24,25 @@ public class ClientController {
 	@Autowired
 	private ClientService clientService;
 
-	@RequestMapping(value = "/client", method = RequestMethod.POST)
-	public ResponseEntity<?> addNewClient(@RequestBody ClientManagerWrapperDTO clientManagerWrapper) throws Exception {
-		return new ResponseEntity<Client>(clientService.saveClient(clientManagerWrapper), HttpStatus.OK);
-	}
-
 	@RequestMapping(value = "/client", method = RequestMethod.GET)
 	public ResponseEntity<?> getAllClients() throws Exception {
 		return new ResponseEntity<List<Client>>(clientService.getAllClients(), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/client", method = RequestMethod.POST)
+	public ResponseEntity<?> addNewClient(@RequestBody ClientManagerWrapperDTO clientManagerWrapper) throws Exception {
+		return new ResponseEntity<Client>(clientService.saveClient(clientManagerWrapper), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/client/{id}", method = RequestMethod.PUT, consumes = "application/json")
 	public ResponseEntity<?> updateClient(@RequestBody ClientManagerWrapperDTO clientManagerWrapper,
 			@PathVariable("id") Integer id) throws Exception {
 		return new ResponseEntity<Client>(clientService.updateClient(clientManagerWrapper, id), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/client/{id}", method = RequestMethod.DELETE, consumes = "application/json")
+	public ResponseEntity<?> deletelient(@PathVariable("id") Integer id) throws Exception {
+		return new ResponseEntity<Client>(clientService.deleteClient(id), HttpStatus.OK);
 	}
 
 }

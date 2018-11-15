@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PUBLIC)
 @NamedQueries({ // nl
-		@NamedQuery(name = "getAllClients", query = "SELECT c FROM Client c") // nl
+		@NamedQuery(name = "getAllClients", query = "SELECT c FROM Client c WHERE c.active = :isAcive") // nl
 })
 public class Client extends BaseModel {
 
@@ -38,6 +38,9 @@ public class Client extends BaseModel {
 
 	@Column
 	private String comment;
+
+	@Column
+	private Boolean active = true;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "manager_id")

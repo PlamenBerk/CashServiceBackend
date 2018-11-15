@@ -133,7 +133,7 @@ public class DocumentService extends BaseService {
 		String docName = "contract_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
-				+ LocalTime.now() + ".docx";
+				+ "_" + String.valueOf(System.currentTimeMillis()) + ".docx";
 
 		doc.write(new FileOutputStream(docPath + "/" + docName));
 
@@ -245,7 +245,7 @@ public class DocumentService extends BaseService {
 		String docName = "certificate_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
-				+ LocalTime.now() + ".docx";
+				+ "_" + String.valueOf(System.currentTimeMillis()) + ".docx";
 
 		doc.write(new FileOutputStream(docPath + "/" + docName));
 
@@ -410,7 +410,7 @@ public class DocumentService extends BaseService {
 		String docName = "protocol_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
-				+ LocalTime.now() + ".docx";
+				+ "_" + String.valueOf(System.currentTimeMillis()) + ".docx";
 
 		doc.write(new FileOutputStream(docPath + "/" + docName));
 

@@ -28,7 +28,7 @@ public class FileStructureOrganizer extends BaseService {
 
 	@PostConstruct
 	public void folderOrganizer() {
-		System.out.println("initializing folder organizer");
+		System.err.println("initializing folder organizer");
 		final DateEntity dateEntity = getEm().find(DateEntity.class, 1);
 		final LocalDate cuurentDate = LocalDate.now();
 
@@ -71,7 +71,7 @@ public class FileStructureOrganizer extends BaseService {
 		} else {
 			CURRENT_FOLDER_LOCATION_DEBIAN = CURRENT_FOLDER_LOCATION_DEBIAN + cuurentDate.getMonth().name() + "-"
 					+ cuurentDate.getYear();
-			System.out.println("Used directory: " + CURRENT_FOLDER_LOCATION_DEBIAN);
+			System.err.println("Used directory: " + CURRENT_FOLDER_LOCATION_DEBIAN);
 		}
 
 	}

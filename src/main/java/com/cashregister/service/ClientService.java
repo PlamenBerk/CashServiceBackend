@@ -34,7 +34,15 @@ public class ClientService extends BaseService {
 
 	@PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
 	public List<Client> getAllClients() throws Exception {
-		return getEm().createNamedQuery("getAllClients", Client.class).getResultList();
+		return getEm().createNamedQuery("getAllClients", Client.class).setParameter("isAcive", Boolean.TRUE)
+				.getResultList();
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	public Client deleteClient(Integer id) {
+		Client client = getEm().find(Client.class, id);
+		client.setActive(false);
+		return client;
 	}
 
 	public Client updateClient(ClientManagerWrapperDTO clientManagerWrapper, Integer id) throws Exception {
