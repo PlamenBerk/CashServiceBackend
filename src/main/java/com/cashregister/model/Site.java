@@ -21,7 +21,7 @@ import lombok.Setter;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PUBLIC)
 @NamedQueries({ // nl
-		@NamedQuery(name = "getSiteByClientId", query = "SELECT c FROM Site c WHERE c.client.id = :clientId") // nl
+		@NamedQuery(name = "getSiteByClientId", query = "SELECT c FROM Site c WHERE c.active = :pActive AND c.client.id = :clientId") // nl
 })
 public class Site extends BaseModel {
 
@@ -33,6 +33,9 @@ public class Site extends BaseModel {
 
 	@Column
 	private String phone;
+
+	@Column
+	private Boolean active = true;
 
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 	@JsonIdentityReference(alwaysAsId = true)

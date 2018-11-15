@@ -5,6 +5,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.cashregister.dto.SiteDTO;
@@ -20,8 +21,8 @@ public class SiteService extends BaseService {
 	private SiteMapper siteMapper;
 
 	public List<Site> getSitesByClientId(int clientId) throws Exception {
-		return getEm().createNamedQuery("getSiteByClientId", Site.class).setParameter("clientId", clientId)
-				.getResultList();
+		return getEm().createNamedQuery("getSiteByClientId", Site.class).setParameter("pActive", Boolean.TRUE)
+				.setParameter("clientId", clientId).getResultList();
 	}
 
 	public Site newSiteForClient(SiteDTO siteDTO, Integer clientId) throws Exception {
@@ -37,6 +38,13 @@ public class SiteService extends BaseService {
 		site.setName(siteDTO.getName());
 		site.setAddress(siteDTO.getAddress());
 		site.setPhone(siteDTO.getPhone());
+		return site;
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	public Site deleteSite(Integer siteId) {
+		Site site = getEm().find(Site.class, siteId);
+		site.setActive(false);
 		return site;
 	}
 

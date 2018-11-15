@@ -42,4 +42,9 @@ public class SiteController {
 		return new ResponseEntity<Site>(siteService.updateSite(siteDTO, siteId), HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/site/{siteId}", method = RequestMethod.DELETE, consumes = "application/json")
+	public ResponseEntity<?> deleteSite(@PathVariable("siteId") Integer siteId) throws Exception {
+		return new ResponseEntity<Site>(siteService.deleteSite(siteId), HttpStatus.OK);
+	}
+
 }
