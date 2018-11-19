@@ -22,7 +22,7 @@ import lombok.Setter;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PUBLIC)
 @NamedQueries({ // nl
-		@NamedQuery(name = "getDevicesForSite", query = "SELECT d FROM Device d WHERE d.site.id = :siteId") // nl
+		@NamedQuery(name = "getDevicesForSite", query = "SELECT d FROM Device d WHERE d.active = :pActive AND d.site.id = :siteId") // nl
 })
 public class Device extends BaseModel {
 
@@ -46,6 +46,9 @@ public class Device extends BaseModel {
 
 	@Column
 	private Boolean isNewFiscalNum;
+
+	@Column
+	private Boolean active = true;
 
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 	@JsonIdentityReference(alwaysAsId = true)

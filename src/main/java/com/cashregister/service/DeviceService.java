@@ -7,6 +7,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.cashregister.dto.DeviceDTO;
@@ -37,8 +38,8 @@ public class DeviceService extends BaseService {
 	}
 
 	public List<Device> getDevicesForSite(int siteId) {
-		return getEm().createNamedQuery("getDevicesForSite", Device.class).setParameter("siteId", siteId)
-				.getResultList();
+		return getEm().createNamedQuery("getDevicesForSite", Device.class).setParameter("pActive", Boolean.TRUE)
+				.setParameter("siteId", siteId).getResultList();
 	}
 
 	public Device updateDevice(DeviceDTO deviceDTO, Integer deviceId) {
@@ -55,6 +56,13 @@ public class DeviceService extends BaseService {
 		device.setNapNumber(deviceDTO.getNapNumber());
 		device.setSim(deviceDTO.getSim());
 
+		return device;
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	public Device deleteDevice(Integer deviceId) {
+		Device device = getEm().find(Device.class, deviceId);
+		device.setActive(false);
 		return device;
 	}
 

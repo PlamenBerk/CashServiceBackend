@@ -42,4 +42,9 @@ public class DeviceController {
 		return new ResponseEntity<Device>(deviceService.updateDevice(deviceDTO, deviceId), HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/device/{deviceId}", method = RequestMethod.DELETE, consumes = "application/json")
+	public ResponseEntity<?> deleteDevice(@PathVariable("deviceId") Integer deviceId) throws Exception {
+		return new ResponseEntity<Device>(deviceService.deleteDevice(deviceId), HttpStatus.OK);
+	}
+
 }
