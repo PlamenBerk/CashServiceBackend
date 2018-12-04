@@ -50,15 +50,10 @@ public class DeviceService extends BaseService {
 		return newDTO;
 	}
 
-<<<<<<< Upstream, based on origin/master
-	public List<Device> getDevicesForSite(int siteId) {
-		return getEm().createNamedQuery("getDevicesForSite", Device.class).setParameter("pActive", Boolean.TRUE)
-				.setParameter("siteId", siteId).getResultList();
-=======
 	public List<DevicePlusDeviceModelDTO> getDevicesForSite(int siteId) {
 		// feature: change logic for faster performance!
 		List<Device> deviceList = getEm().createNamedQuery("getDevicesForSite", Device.class)
-				.setParameter("siteId", siteId).getResultList();
+				.setParameter("siteId", siteId).setParameter("pActive", Boolean.TRUE).getResultList();
 		List<DevicePlusDeviceModelDTO> devicePlusModel = new ArrayList<>();
 		for (Device device : deviceList) {
 			DeviceModel deviceModel = getEm().find(DeviceModel.class, device.getDeviceModel().getId());
@@ -75,7 +70,7 @@ public class DeviceService extends BaseService {
 			devicePlusModel.add(dto);
 		}
 		return devicePlusModel;
->>>>>>> 654b7a6 BACKEND: added new requirements
+
 	}
 
 	public DevicePlusDeviceModelDTO updateDevice(DeviceDTO deviceDTO, Integer deviceId) {
