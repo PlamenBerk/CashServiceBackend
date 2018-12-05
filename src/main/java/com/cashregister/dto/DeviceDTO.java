@@ -13,5 +13,6 @@ public class DeviceDTO {
 	private String fiscalNumPostfix;
 	private String napNumber;
 	private String napDate;
+	private String napPhone;
 
 }

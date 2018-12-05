@@ -363,7 +363,9 @@ public class DocumentService extends BaseService {
 						r.setText(text, 0);
 					}
 					if (text != null && text.contains("deviceDateCreation")) {
-						LocalDate localDate = device.getDateOfUsage();
+						// LocalDate localDate = device.getDateOfUsage(); tova shte vaji samo za novi
+						// aparati
+						LocalDate localDate = device.getNapDate();
 						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 						String formattedStringDate = localDate.format(formatter);
 						text = text.replace("deviceDateCreation", formattedStringDate);

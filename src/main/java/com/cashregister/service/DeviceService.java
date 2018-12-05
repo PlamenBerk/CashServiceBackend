@@ -44,8 +44,9 @@ public class DeviceService extends BaseService {
 		newDTO.setFiscalNumPostfix(device.getFiscalNumPostfix());
 		newDTO.setNapDate(device.getNapDate());
 		newDTO.setNapNumber(device.getNapNumber());
+		newDTO.setNapPhone(device.getNapPhone());
 		newDTO.setSim(device.getSim());
-		newDTO.setModelOfDevice(deviceModel.getManufacturer() + " " + deviceModel.getModel());
+		newDTO.setModelOfDevice(deviceModel.getModel());
 
 		return newDTO;
 	}
@@ -64,7 +65,8 @@ public class DeviceService extends BaseService {
 			dto.setNapDate(device.getNapDate());
 			dto.setNapNumber(device.getNapNumber());
 			dto.setSim(device.getSim());
-			dto.setModelOfDevice(deviceModel.getManufacturer() + " " + deviceModel.getModel());
+			dto.setNapPhone(device.getNapPhone());
+			dto.setModelOfDevice(deviceModel.getModel());
 			deviceModel = null;
 
 			devicePlusModel.add(dto);
@@ -95,7 +97,8 @@ public class DeviceService extends BaseService {
 		dto.setNapDate(device.getNapDate());
 		dto.setNapNumber(device.getNapNumber());
 		dto.setSim(device.getSim());
-		dto.setModelOfDevice(deviceModel.getManufacturer() + " " + deviceModel.getModel());
+		dto.setNapPhone(device.getNapPhone());
+		dto.setModelOfDevice(deviceModel.getModel());
 
 		return dto;
 	}

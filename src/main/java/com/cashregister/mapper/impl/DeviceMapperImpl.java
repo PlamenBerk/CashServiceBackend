@@ -25,6 +25,7 @@ public class DeviceMapperImpl implements DeviceMapper {
 		device.setNapDate(LocalDate.parse(deviceDTO.getNapDate(), formatter));
 		device.setNapNumber(deviceDTO.getNapNumber());
 		device.setSim(deviceDTO.getSim());
+		device.setNapPhone(deviceDTO.getNapPhone());
 
 		return device;
 	}

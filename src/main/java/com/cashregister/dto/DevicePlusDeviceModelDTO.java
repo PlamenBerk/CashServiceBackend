@@ -16,6 +16,7 @@ public class DevicePlusDeviceModelDTO {
 	private String fiscalNumPostfix;
 	private String napNumber;
 	private LocalDate napDate;
+	private String napPhone;
 	private String modelOfDevice;
 
 }
