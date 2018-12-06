@@ -42,7 +42,7 @@ public class Device extends BaseModel {
 	private LocalDate napDate;
 
 	@Column
-	private String napPhone;
+	private String simPhone;
 
 	@Column
 	private LocalDate dateOfUsage;

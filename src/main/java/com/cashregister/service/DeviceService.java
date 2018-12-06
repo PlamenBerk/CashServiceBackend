@@ -44,7 +44,7 @@ public class DeviceService extends BaseService {
 		newDTO.setFiscalNumPostfix(device.getFiscalNumPostfix());
 		newDTO.setNapDate(device.getNapDate());
 		newDTO.setNapNumber(device.getNapNumber());
-		newDTO.setNapPhone(device.getNapPhone());
+		newDTO.setSimPhone(device.getSimPhone());
 		newDTO.setSim(device.getSim());
 		newDTO.setModelOfDevice(deviceModel.getModel());
 
@@ -65,7 +65,7 @@ public class DeviceService extends BaseService {
 			dto.setNapDate(device.getNapDate());
 			dto.setNapNumber(device.getNapNumber());
 			dto.setSim(device.getSim());
-			dto.setNapPhone(device.getNapPhone());
+			dto.setSimPhone(device.getSimPhone());
 			dto.setModelOfDevice(deviceModel.getModel());
 			deviceModel = null;
 
@@ -89,6 +89,7 @@ public class DeviceService extends BaseService {
 		device.setNapDate(LocalDate.parse(deviceDTO.getNapDate(), formatter));
 		device.setNapNumber(deviceDTO.getNapNumber());
 		device.setSim(deviceDTO.getSim());
+		device.setSimPhone(deviceDTO.getSimPhone());
 
 		DevicePlusDeviceModelDTO dto = new DevicePlusDeviceModelDTO();
 		dto.setId(device.getId());
@@ -97,7 +98,7 @@ public class DeviceService extends BaseService {
 		dto.setNapDate(device.getNapDate());
 		dto.setNapNumber(device.getNapNumber());
 		dto.setSim(device.getSim());
-		dto.setNapPhone(device.getNapPhone());
+		dto.setSimPhone(device.getSimPhone());
 		dto.setModelOfDevice(deviceModel.getModel());
 
 		return dto;
