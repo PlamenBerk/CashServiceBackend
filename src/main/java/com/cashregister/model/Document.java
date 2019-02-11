@@ -20,7 +20,8 @@ import lombok.Setter;
 @Setter(value = AccessLevel.PUBLIC)
 @NamedQueries({ // nl
 		@NamedQuery(name = "getExpiredBetweenDates", query = "SELECT d FROM Document d WHERE d.endDate between :startDate AND :endDate"),
-		@NamedQuery(name = "getDocumentByDeviceId", query = "SELECT d FROM Document d WHERE d.device.id = :pDeviceId ORDER BY id DESC")// nl
+		@NamedQuery(name = "getDocumentByDeviceId", query = "SELECT d FROM Document d WHERE d.device.id = :pDeviceId ORDER BY id DESC"), // nl
+		@NamedQuery(name = "getContractWithMaxID", query = "SELECT d FROM Document d WHERE d.device.id = :pDeviceId ORDER BY id DESC")// nl
 })
 public class Document extends BaseModel {
 

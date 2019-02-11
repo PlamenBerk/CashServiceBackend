@@ -43,12 +43,16 @@ public class DocumentService extends BaseService {
 	// "D://CashRegisterDocs/svidetelstvo_template.docx";
 	// private static final String DOC_TEMPLATE_PROTOCOL =
 	// "D://CashRegisterDocs/protocol_template.docx";
+	// private String DOC_TEMPLATE_REQUEST =
+	// "D://CashRegisterDocs/request_template.docx";
 
 	private String DOC_TEMPLATE_DEBIAN = "/home/plamendanielpics/cashregister/doc-template.docx";
 
 	private String DOC_TEMPLATE_CERT_DEBIAN = "/home/plamendanielpics/cashregister/svidetelstvo_template.docx";
 
 	private String DOC_TEMPLATE_PROTOCOL_DEBIAN = "/home/plamendanielpics/cashregister/protocol_template.docx";
+
+	private String DOC_TEMPLATE_REQUEST_DEBIAN = "/home/plamendanielpics/cashregister/protocol_request.docx";
 
 	public Resource generateDocument(DocumentDTO documentDTO) throws Exception {
 
@@ -410,6 +414,103 @@ public class DocumentService extends BaseService {
 
 		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
 		String docName = "protocol_" + device.getSite().getClient().getName() + "_"
+				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
+				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
+				+ "_" + String.valueOf(System.currentTimeMillis()) + ".docx";
+
+		doc.write(new FileOutputStream(docPath + "/" + docName));
+
+		doc = docTemplate; // save the original template
+		doc.close();
+		docTemplate.close();
+
+		File f = new File(docPath + "/" + docName);
+		URI u = f.toURI();
+		Resource resource = new UrlResource(u);
+
+		if (resource.exists()) {
+			return resource;
+		} else {
+			throw new FileNotFoundException("File not found " + docName);
+		}
+	}
+
+	public Resource generateDocumentRequest(String deviceId) throws InvalidFormatException, IOException {
+		Device device = getEm().find(Device.class, Integer.valueOf(deviceId));
+
+		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_REQUEST_DEBIAN));
+		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_REQUEST_DEBIAN));
+		for (XWPFParagraph p : doc.getParagraphs()) {
+			List<XWPFRun> runs = p.getRuns();
+			if (runs != null) {
+				for (XWPFRun r : runs) {
+					String text = r.getText(0);
+					if (text != null && text.contains("managerName")) {
+						text = text.replace("managerName", device.getSite().getClient().getManager().getName());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("egnorbulstat")) {
+						String egnOrBulstat = device.getSite().getClient().getBulstat().length() < 3
+								? device.getSite().getClient().getEGN()
+								: device.getSite().getClient().getBulstat();
+						text = text.replace("egnorbulstat", egnOrBulstat);
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("clientName")) {
+						text = text.replace("clientName", device.getSite().getClient().getName());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("clientAddress")) {
+						text = text.replace("clientAddress", device.getSite().getClient().getAddress());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("siteName")) {
+						text = text.replace("siteName", device.getSite().getName());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("siteAddress")) {
+						text = text.replace("siteAddress", device.getSite().getAddress());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("deviceModel")) {
+						text = text.replace("deviceModel", device.getDeviceModel().getModel());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("deviceCert")) {
+						text = text.replace("deviceCert", device.getDeviceModel().getCertificate());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("deviceNum")) {
+						text = text.replace("deviceNum",
+								device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("fiscalNum")) {
+						text = text.replace("fiscalNum",
+								device.getDeviceModel().getFiscalNumPrefix() + device.getFiscalNumPostfix());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("contractNumber")) {
+						Document document = getEm().createNamedQuery("getContractWithMaxID", Document.class)
+								.setParameter("pDeviceId", Integer.valueOf(deviceId)).setMaxResults(1)
+								.getSingleResult();
+
+						text = text.replace("contractNumber", document.getDocNumber());
+						r.setText(text, 0);
+					}
+					if (text != null && text.contains("contractDate")) {
+						LocalDate localDate = LocalDate.now();
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+						String formattedStringDate = localDate.format(formatter);
+						text = text.replace("contractDate", formattedStringDate);
+						r.setText(text, 0);
+					}
+				}
+			}
+		}
+
+		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
+		String docName = "request_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
 				+ "_" + String.valueOf(System.currentTimeMillis()) + ".docx";

@@ -65,6 +65,17 @@ public class DocumentController {
 				.body(resource);
 	}
 
+	@RequestMapping(value = "/document-request/{deviceId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Resource> generateDocumentRequest(@PathVariable("deviceId") String deviceId)
+			throws Exception {
+
+		Resource resource = docService.generateDocumentRequest(deviceId);
+
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
+	}
+
 	@RequestMapping(value = "/document/{docId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Resource> downloadFile(@PathVariable("docId") Integer docId, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
