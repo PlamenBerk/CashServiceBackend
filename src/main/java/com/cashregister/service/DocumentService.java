@@ -46,20 +46,18 @@ public class DocumentService extends BaseService {
 	// private String DOC_TEMPLATE_REQUEST =
 	// "D://CashRegisterDocs/request_template.docx";
 
-	private String DOC_TEMPLATE_DEBIAN = "/home/plamendanielpics/cashregister/doc-template.docx";
-
-	private String DOC_TEMPLATE_CERT_DEBIAN = "/home/plamendanielpics/cashregister/svidetelstvo_template.docx";
-
-	private String DOC_TEMPLATE_PROTOCOL_DEBIAN = "/home/plamendanielpics/cashregister/protocol_template.docx";
-
-	private String DOC_TEMPLATE_REQUEST_DEBIAN = "/home/plamendanielpics/cashregister/protocol_request.docx";
+	// for debian
+	private String DOC_TEMPLATE = "/home/plamendanielpics/cashregister/doc-template.docx";
+	private String DOC_TEMPLATE_CERT = "/home/plamendanielpics/cashregister/svidetelstvo_template.docx";
+	private String DOC_TEMPLATE_PROTOCOL = "/home/plamendanielpics/cashregister/protocol_template.docx";
+	private String DOC_TEMPLATE_REQUEST = "/home/plamendanielpics/cashregister/protocol_request.docx";
 
 	public Resource generateDocument(DocumentDTO documentDTO) throws Exception {
 
 		Device device = getEm().find(Device.class, Integer.valueOf(documentDTO.getDeviceId()));
 
-		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_DEBIAN));
-		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_DEBIAN));
+		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
+		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE));
 		for (XWPFParagraph p : doc.getParagraphs()) {
 			List<XWPFRun> runs = p.getRuns();
 			if (runs != null) {
@@ -133,7 +131,7 @@ public class DocumentService extends BaseService {
 			}
 		}
 
-		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
+		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
 		String docName = "contract_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
@@ -167,8 +165,8 @@ public class DocumentService extends BaseService {
 		Document docFromDB = getEm().createNamedQuery("getDocumentByDeviceId", Document.class).setMaxResults(1)
 				.setParameter("pDeviceId", device.getId()).getSingleResult();
 
-		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_CERT_DEBIAN));
-		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_CERT_DEBIAN));
+		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_CERT));
+		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_CERT));
 		for (XWPFParagraph p : doc.getParagraphs()) {
 			List<XWPFRun> runs = p.getRuns();
 			if (runs != null) {
@@ -245,7 +243,7 @@ public class DocumentService extends BaseService {
 			}
 		}
 
-		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
+		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
 		String docName = "certificate_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
@@ -280,8 +278,8 @@ public class DocumentService extends BaseService {
 	public Resource generateDocumentProtocol(ProtocolDTO protocolDTO) throws InvalidFormatException, IOException {
 		Device device = getEm().find(Device.class, Integer.valueOf(protocolDTO.getDeviceId()));
 
-		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_PROTOCOL_DEBIAN));
-		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_PROTOCOL_DEBIAN));
+		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_PROTOCOL));
+		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_PROTOCOL));
 		for (XWPFParagraph p : doc.getParagraphs()) {
 			List<XWPFRun> runs = p.getRuns();
 			if (runs != null) {
@@ -412,7 +410,7 @@ public class DocumentService extends BaseService {
 			}
 		}
 
-		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
+		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
 		String docName = "protocol_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
@@ -438,8 +436,8 @@ public class DocumentService extends BaseService {
 	public Resource generateDocumentRequest(String deviceId) throws InvalidFormatException, IOException {
 		Device device = getEm().find(Device.class, Integer.valueOf(deviceId));
 
-		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_REQUEST_DEBIAN));
-		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_REQUEST_DEBIAN));
+		XWPFDocument doc = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_REQUEST));
+		XWPFDocument docTemplate = new XWPFDocument(OPCPackage.open(DOC_TEMPLATE_REQUEST));
 		for (XWPFParagraph p : doc.getParagraphs()) {
 			List<XWPFRun> runs = p.getRuns();
 			if (runs != null) {
@@ -509,7 +507,7 @@ public class DocumentService extends BaseService {
 			}
 		}
 
-		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION_DEBIAN;
+		String docPath = FileStructureOrganizer.CURRENT_FOLDER_LOCATION;
 		String docName = "request_" + device.getSite().getClient().getName() + "_"
 				+ device.getDeviceModel().getManufacturer() + "_" + device.getDeviceModel().getModel() + "_"
 				+ device.getDeviceModel().getDeviceNumPrefix() + device.getDeviceNumPostfix() + "_" + LocalDate.now()
@@ -554,6 +552,20 @@ public class DocumentService extends BaseService {
 		List<Document> listDocs = getEm().createNamedQuery("getExpiredBetweenDates", Document.class)
 				.setParameter("startDate", localStartDate).setParameter("endDate", localEndDate).getResultList();
 		return listDocs;
+	}
+
+	public Resource rewriteDocument(DocumentDTO documentDTO, int docId) throws Exception {
+		Document doc = getEm().find(Document.class, docId);
+		Resource resource = null;
+		try {
+			doc.setIsRewrited(Boolean.TRUE);
+			documentDTO.setDeviceId(doc.getDevice().getId().toString());
+			resource = generateDocument(documentDTO);
+		} catch (Exception e) {
+			doc.setIsRewrited(Boolean.FALSE);
+		}
+
+		return resource;
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")

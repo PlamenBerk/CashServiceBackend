@@ -99,4 +99,14 @@ public class DocumentController {
 				HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/document/{documentId}", method = RequestMethod.POST)
+	public ResponseEntity<?> rewriteDocumetn(@RequestBody DocumentDTO documentDTO,
+			@PathVariable("documentId") Integer documentId) throws Exception {
+		Resource resource = docService.rewriteDocument(documentDTO, documentId);
+
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
+	}
+
 }

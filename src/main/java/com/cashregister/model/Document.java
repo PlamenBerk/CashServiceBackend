@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PUBLIC)
 @NamedQueries({ // nl
-		@NamedQuery(name = "getExpiredBetweenDates", query = "SELECT d FROM Document d WHERE d.endDate between :startDate AND :endDate"),
+		@NamedQuery(name = "getExpiredBetweenDates", query = "SELECT d FROM Document d WHERE d.isRewrited = FALSE AND d.endDate between :startDate AND :endDate"),
 		@NamedQuery(name = "getDocumentByDeviceId", query = "SELECT d FROM Document d WHERE d.device.id = :pDeviceId ORDER BY id DESC"), // nl
 		@NamedQuery(name = "getContractWithMaxID", query = "SELECT d FROM Document d WHERE d.device.id = :pDeviceId ORDER BY id DESC")// nl
 })
@@ -39,6 +39,9 @@ public class Document extends BaseModel {
 
 	@Column
 	private String docNumber;
+
+	@Column(columnDefinition = "BOOLEAN DEFAULT false")
+	private Boolean isRewrited;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "device_id")
