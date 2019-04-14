@@ -584,4 +584,10 @@ public class DocumentService extends BaseService {
 
 	}
 
+	public String removeExpiredDocument(Integer docId) {
+		Document doc = getEm().find(Document.class, docId);
+		doc.setIsRewrited(Boolean.TRUE);
+		return "Документът е премахнат";
+	}
+
 }

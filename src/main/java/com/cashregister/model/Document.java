@@ -41,7 +41,7 @@ public class Document extends BaseModel {
 	private String docNumber;
 
 	@Column(columnDefinition = "BOOLEAN DEFAULT false")
-	private Boolean isRewrited;
+	private Boolean isRewrited = false;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "device_id")

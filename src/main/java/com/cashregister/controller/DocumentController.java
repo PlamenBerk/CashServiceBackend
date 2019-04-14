@@ -99,6 +99,11 @@ public class DocumentController {
 				HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/expired-document/{docId}", method = RequestMethod.GET)
+	public ResponseEntity<?> getExpiredDocuments(@PathVariable("docId") Integer docId) throws Exception {
+		return new ResponseEntity<String>(docService.removeExpiredDocument(docId), HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/document/{documentId}", method = RequestMethod.POST)
 	public ResponseEntity<?> rewriteDocumetn(@RequestBody DocumentDTO documentDTO,
 			@PathVariable("documentId") Integer documentId) throws Exception {
